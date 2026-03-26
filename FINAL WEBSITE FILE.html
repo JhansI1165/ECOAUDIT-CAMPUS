@@ -1,0 +1,3297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnergyAudit — GNITS Strategic Energy Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════════
+   THEME: Clean Light — Professional academic
+   G. Narayanamma Institute of Technology
+══════════════════════════════════════════ */
+
+:root{
+  --bg:#f0f4f8;
+  --surface:#ffffff;
+  --card:#ffffff;
+  --card2:#f8fafc;
+
+  --green:#1a7a3c;
+  --gl:#22a052;
+  --gp:rgba(26,122,60,.07);
+
+  --amber:#d97706;
+  --ap:rgba(217,119,6,.08);
+
+  --red:#dc2626;
+  --rp:rgba(220,38,38,.08);
+
+  --blue:#2563eb;
+  --purple:#7c3aed;
+
+  --text:#1e293b;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --border-strong:#cbd5e1;
+
+  --shadow:0 1px 4px rgba(0,0,0,.07);
+  --shadow-md:0 4px 16px rgba(0,0,0,.09);
+
+  --font-display:'Syne',sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:var(--font-mono);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ── HEADER ─────────────────────────── */
+header{
+  background:#ffffff;
+  color:var(--text);
+  padding:.85rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+  border-bottom:3px solid var(--green);
+  box-shadow:0 2px 10px rgba(0,0,0,.07);
+  flex-wrap:wrap;gap:.5rem;
+}
+.logo{
+  font-family:var(--font-display);font-weight:800;font-size:1.2rem;
+  letter-spacing:.02em;color:var(--green);
+}
+.logo span{color:var(--amber);}
+.college-tag{font-size:.58rem;color:var(--muted);letter-spacing:.04em;font-family:var(--font-mono);}
+.live-dot{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;color:var(--green);margin-left:.8rem;}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(26,122,60,.5);}50%{box-shadow:0 0 0 6px rgba(26,122,60,0);}}
+
+nav{display:flex;gap:.25rem;flex-wrap:wrap;}
+.nav-btn{
+  font-family:var(--font-display);font-size:.72rem;font-weight:600;
+  padding:.3rem .88rem;border-radius:6px;letter-spacing:.02em;
+  border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;
+}
+.nav-btn:hover{background:var(--gp);color:var(--green);border-color:var(--green);}
+.nav-btn.active{background:var(--green);color:#fff;border-color:var(--green);font-weight:700;}
+
+/* ── LAYOUT ─────────────────────────── */
+main{max-width:1140px;margin:0 auto;padding:1.5rem;}
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .28s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.page-title{
+  font-family:var(--font-display);font-size:1.5rem;font-weight:800;
+  color:var(--green);margin-bottom:.2rem;
+}
+.page-sub{color:var(--muted);font-size:.7rem;margin-bottom:1.4rem;}
+
+/* ── CARDS ──────────────────────────── */
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:1.2rem;
+  box-shadow:var(--shadow);
+  margin-bottom:1rem;
+}
+.card-title{
+  font-family:var(--font-display);font-size:.95rem;font-weight:700;
+  color:var(--green);margin-bottom:.85rem;display:flex;align-items:center;gap:.4rem;
+}
+
+/* ── FORMS ──────────────────────────── */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;margin-bottom:.9rem;}
+.fg label{display:block;font-size:.63rem;color:var(--muted);margin-bottom:.22rem;text-transform:uppercase;letter-spacing:.05em;}
+.fg input,.fg select{
+  width:100%;padding:.45rem .7rem;
+  border:1px solid var(--border);border-radius:6px;
+  font-family:var(--font-mono);font-size:.78rem;
+  background:#fff;color:var(--text);
+  transition:border-color .18s;
+}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(26,122,60,.1);}
+
+/* ── BUTTONS ────────────────────────── */
+.btn{
+  font-family:var(--font-display);font-size:.8rem;font-weight:700;
+  padding:.48rem 1.2rem;border-radius:6px;border:none;cursor:pointer;
+  transition:all .18s;letter-spacing:.02em;
+}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:var(--gl);transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,122,60,.2);}
+.btn-amber{background:var(--amber);color:#fff;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text);}.btn-outline:hover{border-color:var(--green);color:var(--green);}
+
+/* ── STAT CARDS ─────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.85rem;margin-bottom:1.1rem;}
+.stat-card{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:1rem;box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--green);
+}
+.stat-card.amber::before{background:var(--amber);}
+.stat-card.red::before{background:var(--red);}
+.stat-card.blue::before{background:var(--blue);}
+.stat-card.purple::before{background:var(--purple);}
+.stat-icon{font-size:1.3rem;margin-bottom:.35rem;}
+.stat-val{
+  font-family:var(--font-display);font-size:1.5rem;font-weight:700;
+  color:var(--green);line-height:1;
+}
+.stat-card.amber .stat-val{color:var(--amber);}
+.stat-card.red .stat-val{color:var(--red);}
+.stat-card.blue .stat-val{color:var(--blue);}
+.stat-card.purple .stat-val{color:var(--purple);}
+.stat-lbl{font-size:.6rem;color:var(--muted);margin-top:.22rem;text-transform:uppercase;letter-spacing:.05em;}
+
+/* ── RESULT BOXES ───────────────────── */
+.res-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.65rem;margin-bottom:1rem;}
+.res-box{
+  background:rgba(26,122,60,.06);
+  border:1px solid var(--border);border-radius:8px;padding:.8rem;text-align:center;
+}
+.res-box.warn{background:rgba(245,166,35,.08);border-color:rgba(245,166,35,.3);}
+.res-box.danger{background:rgba(255,82,82,.08);border-color:rgba(255,82,82,.3);}
+.res-val{
+  font-family:var(--font-display);font-size:1.3rem;font-weight:700;
+  color:var(--green);line-height:1;margin-bottom:.18rem;
+}
+.res-box.warn .res-val{color:var(--amber);}
+.res-box.danger .res-val{color:var(--red);}
+.res-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+
+/* ── PERIOD / MODE BUTTONS ──────────── */
+.period-toggle{display:flex;gap:.22rem;}
+.period-btn{
+  font-family:var(--font-mono);font-size:.65rem;
+  padding:.28rem .65rem;border-radius:5px;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;
+}
+.period-btn:hover{border-color:var(--green);color:var(--green);}
+.period-btn.active{background:var(--green);color:#fff;border-color:var(--green);font-weight:700;}
+
+/* ── BLOCK FILTER BUTTONS ───────────── */
+.blk-btn{
+  font-family:var(--font-mono);font-size:.65rem;
+  padding:.25rem .62rem;border-radius:5px;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;
+}
+.blk-btn:hover{border-color:var(--amber);color:var(--amber);}
+.blk-btn.active{background:var(--amber);color:#ffffff;border-color:var(--amber);font-weight:700;}
+.blk-btn.ece{border-color:rgba(255,82,82,.5);color:var(--red);}
+.blk-btn.ece.active{background:var(--red);color:#fff;}
+
+/* ── STEPPER NAV ────────────────────── */
+#stepper-nav{
+  display:flex;align-items:stretch;margin-bottom:.75rem;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;
+}
+.step-btn{
+  flex:1;display:flex;align-items:center;gap:.65rem;padding:.7rem .9rem;
+  background:transparent;border:none;cursor:pointer;transition:background .2s;
+  text-align:left;font-family:inherit;
+}
+.step-btn:disabled{cursor:default;opacity:.35;}
+.step-btn:not(:disabled):hover{background:rgba(26,122,60,.06);}
+.step-btn.active{background:rgba(26,122,60,.07);}
+.step-num{
+  width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);
+  color:var(--muted);font-family:var(--font-display);font-weight:700;font-size:.8rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;
+}
+.step-btn.active .step-num{background:var(--green);color:#fff;}
+.step-btn.done .step-num{background:var(--green);color:#fff;}
+.step-btn.done .step-num::after{content:'✓';}
+.step-label{font-size:.72rem;font-weight:600;color:var(--text);line-height:1.4;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.04em;}
+.step-label small{font-size:.6rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;}
+.step-connector{width:1px;background:var(--border);flex-shrink:0;}
+
+/* ── STEP PANELS ────────────────────── */
+.step-panel{display:none;}
+.step-panel.active{display:block;}
+
+/* ── STAGGER SLIDERS ────────────────── */
+.stag-row{
+  display:grid;grid-template-columns:140px 1fr 90px 90px;gap:.65rem;align-items:center;
+  padding:.5rem .7rem;border-radius:7px;background:rgba(26,122,60,.04);
+  border:1px solid var(--border);transition:border-color .2s;
+}
+.stag-row:hover{border-color:var(--green);}
+.stag-name{font-size:.72rem;font-weight:600;color:var(--text);}
+.stag-name small{display:block;font-size:.6rem;color:var(--muted);font-weight:400;}
+.stag-slider{width:100%;accent-color:var(--green);cursor:pointer;}
+.stag-time{font-family:var(--font-mono);font-size:.7rem;color:var(--green);font-weight:700;text-align:center;}
+.stag-kva{font-family:var(--font-display);font-size:.8rem;font-weight:700;color:var(--amber);text-align:right;}
+
+/* Weather scenario buttons */
+.weather-btn{font-family:var(--font-display);font-size:.72rem;font-weight:600;padding:.3rem .85rem;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .18s;}
+.weather-btn:hover{border-color:var(--amber);color:var(--amber);}
+.weather-btn.active.clear{background:#fef9c3;border-color:#ca8a04;color:#92400e;}
+.weather-btn.active.partly{background:#e0f2fe;border-color:#0284c7;color:#0c4a6e;}
+.weather-btn.active.overcast{background:#f1f5f9;border-color:#64748b;color:#1e293b;}
+.weather-btn.active.storm{background:#fce7f3;border-color:#be185d;color:#831843;}
+
+/* ── CHART WRAP ─────────────────────── */
+.chart-wrap{position:relative;margin-top:.7rem;}
+
+/* ── ILER BADGE ─────────────────────── */
+.iler-badge{
+  display:inline-block;font-family:var(--font-display);font-weight:700;font-size:.8rem;
+  padding:.38rem 1rem;border-radius:5px;margin-bottom:.85rem;letter-spacing:.04em;
+}
+.iler-good{background:rgba(26,122,60,.10);color:var(--green);border:1px solid rgba(26,122,60,.25);}
+.iler-review{background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.3);}
+.iler-urgent{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3);}
+
+/* OCCUPANCY */
+.occ-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem;margin-bottom:1rem;}
+.occ-stat{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:.85rem;text-align:center;}
+.occ-val{font-family:var(--font-display);font-size:1.35rem;font-weight:700;color:var(--green);}
+.occ-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.7rem;}
+.room-card{border:1px solid var(--border);border-radius:8px;padding:.85rem;background:var(--card2);transition:all .2s;}
+.room-card.occupied{border-color:rgba(26,122,60,.5);background:rgba(26,122,60,.06);}
+.room-card.vacant{opacity:.5;}
+.room-name{font-family:var(--font-display);font-size:.8rem;font-weight:700;margin-bottom:.22rem;color:var(--text);}
+.room-load{font-size:.68rem;color:var(--muted);margin-bottom:.55rem;}
+.toggle-sw{position:relative;width:40px;height:21px;cursor:pointer;}
+.toggle-sw input{display:none;}
+.toggle-track{width:40px;height:21px;border-radius:11px;background:rgba(255,255,255,.15);transition:background .2s;position:relative;}
+.toggle-track::after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;}
+.toggle-sw input:checked+.toggle-track{background:var(--green);}
+.toggle-sw input:checked+.toggle-track::after{transform:translateX(19px);}
+
+/* DEMAND ALERT */
+.demand-alert{background:rgba(255,82,82,.08);border:1px solid rgba(255,82,82,.4);border-radius:8px;padding:.9rem 1.2rem;margin-bottom:.9rem;display:none;}
+.demand-alert.show{display:block;animation:fadeUp .3s ease;}
+.demand-alert-title{font-family:var(--font-display);font-weight:700;color:var(--red);font-size:.95rem;margin-bottom:.28rem;text-transform:uppercase;letter-spacing:.04em;}
+.demand-bar-outer{height:14px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin:.45rem 0;}
+.demand-bar-inner{height:100%;border-radius:4px;transition:width .5s,background .5s;}
+
+/* PQ CARDS */
+.pq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;}
+.pq-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:.9rem;text-align:center;}
+.pq-val{font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:.18rem;}
+.pq-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.pq-status{font-size:.65rem;font-weight:700;padding:.16rem .5rem;border-radius:4px;margin-top:.35rem;display:inline-block;}
+.pq-ok{background:rgba(26,122,60,.10);color:var(--green);}
+.pq-warn{background:rgba(245,166,35,.12);color:var(--amber);}
+.pq-bad{background:rgba(255,82,82,.12);color:var(--red);}
+.pf-bar-wrap{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:.45rem;}
+.pf-bar{height:100%;border-radius:3px;transition:width .5s,background .5s;}
+
+/* APPLIANCE TABLE */
+.app-table{width:100%;border-collapse:collapse;font-size:.75rem;margin-bottom:.85rem;}
+.app-table th{background:rgba(26,122,60,.07);color:var(--green);padding:.5rem .65rem;text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);}
+.app-table td{padding:.5rem .65rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.app-table tr:hover td{background:rgba(26,122,60,.04);}
+.saving-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:3px;}
+.saving-fill{height:100%;border-radius:2px;background:var(--green);transition:width .5s;}
+.lux-in{width:68px!important;padding:.36rem .48rem!important;border:1px solid var(--border);border-radius:5px;font-family:var(--font-mono);font-size:.76rem;background:#ffffff;color:var(--text);}
+.payback-cell{font-family:var(--font-display);font-weight:700;font-size:.8rem;}
+.pb-good{color:var(--green);}.pb-ok{color:var(--amber);}.pb-long{color:var(--red);}
+
+/* ═══════════════════════════════
+   BLUEPRINT — REAL FLOOR PLANS
+═══════════════════════════════ */
+.bp-outer{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#081a18;}
+.bp-controls{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.9rem;}
+.floor-tabs{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.floor-tab{font-family:var(--font-mono);font-size:.68rem;padding:.28rem .65rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;}
+.floor-tab:hover{border-color:var(--green);color:var(--green);}
+.floor-tab.active{background:var(--green);color:#fff;border-color:var(--green);font-weight:700;}
+#bp-canvas{display:block;width:100%;cursor:crosshair;}
+.heat-legend{display:flex;align-items:center;gap:.45rem;margin-top:.6rem;font-size:.65rem;color:var(--muted);}
+.heat-grad{width:130px;height:10px;border-radius:3px;background:linear-gradient(to right,#00c9a7,#f5a623,#ff5252);}
+.room-tooltip{position:absolute;background:rgba(0,15,12,.92);border:1px solid var(--green);color:var(--green);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .75rem;border-radius:6px;pointer-events:none;display:none;z-index:50;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+
+/* LOG */
+.log-list{max-height:165px;overflow-y:auto;}
+.log-item{display:flex;align-items:center;gap:.42rem;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.68rem;}
+.log-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.log-time{color:var(--muted);min-width:45px;}
+
+.lux-row{display:flex;flex-wrap:wrap;gap:.38rem;margin-bottom:.85rem;align-items:center;}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--green);color:#fff;padding:.7rem 1.2rem;border-radius:10px;font-size:.78rem;font-family:var(--font-display);font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.2);transform:translateY(100px);opacity:0;transition:all .3s;z-index:9999;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.warn-toast{background:var(--red);}
+
+@media(max-width:680px){header{flex-direction:column;align-items:flex-start;}main{padding:1rem;}}
+
+/* ── TIMETABLE UPLOAD WIDGET ── */
+.tt-ytab.active-y, .tt-ytab.btn-green { background:var(--green)!important; color:#fff!important; border-color:var(--green)!important; }
+.tt-stat-card {
+  background:#f8fafc; border:1px solid var(--border); border-radius:9px;
+  padding:.6rem .75rem; text-align:center; cursor:pointer; transition:all .18s;
+}
+.tt-stat-card:hover { border-color:var(--green); background:var(--gp); }
+.tt-stat-card.has-data { border-color:rgba(26,122,60,.35); background:#f0fdf4; }
+.tt-year { font-size:.68rem; color:var(--muted); letter-spacing:.04em; text-transform:uppercase; margin-bottom:.2rem; }
+.tt-hrs  { font-family:var(--font-display); font-size:1.05rem; font-weight:800; color:var(--green); line-height:1.1; }
+.tt-rooms{ font-size:.62rem; color:var(--muted); margin-top:.2rem; }
+#tt-drop:hover { border-color:var(--green); background:var(--gp); }
+.tt-table { width:100%; border-collapse:collapse; font-size:.73rem; }
+.tt-table th { background:var(--green); color:#fff; padding:.35rem .6rem; text-align:left; font-size:.68rem; letter-spacing:.04em; }
+.tt-table td { padding:.3rem .6rem; border-bottom:1px solid var(--border); }
+.tt-table tr:hover td { background:var(--gp); }
+.tt-table td.hrs { font-family:var(--font-display); font-weight:700; color:var(--green); }
+.tt-table td.cost { color:var(--amber); font-weight:600; }
+.tt-table td.kwh  { color:var(--blue); }
+
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo">⚡ Energy<span>Audit</span><span class="live-dot"><span class="pulse"></span>LIVE</span></div>
+    <div class="college-tag">G. NARAYANAMMA INSTITUTE OF TECHNOLOGY AND SCIENCE · STRATEGIC ENERGY MANAGEMENT</div>
+  </div>
+  <nav>
+    <button class="nav-btn active" onclick="showPage('dashboard',this)">📊 Dashboard</button>
+    <button class="nav-btn" onclick="showPage('lighting',this)">💡 Lighting</button>
+    <button class="nav-btn" onclick="showPage('appliance',this)">🔌 Appliance</button>
+    <button class="nav-btn" onclick="showPage('occupancy',this)">👁️ Occupancy</button>
+    <button class="nav-btn" onclick="showPage('demand',this)">⚡ Demand</button>
+    <button class="nav-btn" onclick="showPage('blueprint',this)">🗺️ Blueprint</button>
+    <button class="nav-btn" onclick="showPage('solar',this)">☀️ Solar</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashboard" class="page active">
+  <div class="page-title">📊 Energy Dashboard</div>
+  <div class="page-sub">Live overview · Block-wise costs · Power quality · Audit history</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-val" id="d-saved">0 <span style="font-size:.75rem;font-weight:400;">kWh</span></div><div class="stat-lbl" id="d-saved-lbl">Energy Saved (Month)</div></div>
+    <div class="stat-card amber"><div class="stat-icon">💰</div><div class="stat-val" id="d-cost">₹0</div><div class="stat-lbl" id="d-cost-lbl">Cost Saved (Month)</div></div>
+    <div class="stat-card"><div class="stat-icon">🌿</div><div class="stat-val" id="d-co2">0 <span style="font-size:.75rem;font-weight:400;">kg CO₂</span></div><div class="stat-lbl">Carbon Avoided</div></div>
+    <div class="stat-card blue"><div class="stat-icon">📡</div><div class="stat-val" id="d-live-load">142.0 <span style="font-size:.75rem;font-weight:400;">kW</span></div><div class="stat-lbl">Live Campus Load</div></div>
+    <div class="stat-card purple"><div class="stat-icon">⚙️</div><div class="stat-val" id="d-pf">0.94 <span style="font-size:.75rem;font-weight:400;">pu</span></div><div class="stat-lbl">Power Factor</div></div>
+    <div class="stat-card red"><div class="stat-icon">🏢</div><div class="stat-val">5</div><div class="stat-lbl">Blocks Audited</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">⚙️ Power Quality Monitor <span style="font-size:.62rem;color:var(--muted);font-weight:400;margin-left:.5rem;">ESP32 Simulated Feed · Updates every 4s</span></div>
+    <div class="pq-grid" id="pq-grid"></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.4rem;">
+      <div class="card-title" style="margin-bottom:0;">📈 Energy Savings Over Time</div>
+      <div class="period-toggle">
+        <button class="period-btn" onclick="setPeriod('day',this)">Day</button>
+        <button class="period-btn" onclick="setPeriod('week',this)">Week</button>
+        <button class="period-btn active" onclick="setPeriod('month',this)">Month</button>
+        <button class="period-btn" onclick="setPeriod('year',this)">Year</button>
+      </div>
+    </div>
+    <div class="chart-wrap" style="height:195px;"><canvas id="savingsChart"></canvas></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="card">
+      <div class="card-title">🏢 Block-wise Cost (₹/month)</div>
+      <div class="chart-wrap" style="height:185px;"><canvas id="blockCostChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Audit Log</div>
+      <div class="log-list" id="audit-log"><div class="log-item"><div class="log-dot"></div><span class="log-time">--:--</span><span>No audits yet.</span></div></div>
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:.5rem;">
+    <button class="btn btn-red" onclick="downloadReport()">⬇ Download PDF Report</button>
+  </div>
+</div>
+
+<!-- ══ LIGHTING ══ -->
+<div id="lighting" class="page">
+  <div class="page-title">💡 Lighting Audit Tool</div>
+  <div class="page-sub">Room Index · ILER · Lux analysis — MATLAB equivalent</div>
+  <div class="card">
+    <div class="card-title">🏠 Room Parameters</div>
+    <div class="form-grid">
+      <div class="fg"><label>Room Name</label><input type="text" id="l-room" value="EEE Lab B101"></div>
+      <div class="fg"><label>Length (m)</label><input type="number" id="l-L" value="16.3" step=".1"></div>
+      <div class="fg"><label>Width (m)</label><input type="number" id="l-W" value="10" step=".1"></div>
+      <div class="fg"><label>Mount Height (m)</label><input type="number" id="l-H" value="2.8" step=".1"></div>
+      <div class="fg"><label>No. of Lamps</label><input type="number" id="l-lamps" value="8"></div>
+      <div class="fg"><label>Watt/Lamp (W)</label><input type="number" id="l-watt" value="40"></div>
+      <div class="fg"><label>Source Type</label>
+        <select id="l-src">
+          <option value="fluorescent">Fluorescent (CF=1.08)</option>
+          <option value="led">LED (CF=1.00)</option>
+          <option value="mercury">Mercury (CF=1.14)</option>
+          <option value="sodium">Sodium (CF=1.22)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Sector</label>
+        <select id="l-sect">
+          <option value="commercial">Commercial (Class/Library)</option>
+          <option value="industrial">Industrial (Lab/Workshop)</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:.85rem;">
+      <label style="font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:.38rem;">LUX READINGS</label>
+      <div class="lux-row" id="lux-inputs">
+        <input type="number" class="lux-in" value="650">
+        <input type="number" class="lux-in" value="620">
+        <input type="number" class="lux-in" value="680">
+      </div>
+      <button class="btn btn-outline" style="font-size:.7rem;padding:.28rem .7rem;" onclick="addLux()">+ Add Reading</button>
+    </div>
+    <div style="display:flex;gap:.55rem;flex-wrap:wrap;">
+      <button class="btn btn-green" onclick="runLighting()">▶ Run Audit</button>
+      <button class="btn btn-red" onclick="downloadReport()">⬇ PDF Report</button>
+    </div>
+  </div>
+  <div class="card" id="l-results" style="display:none;">
+    <div class="card-title">📊 Results — <span id="l-res-room"></span></div>
+    <div id="l-badge"></div>
+    <div class="res-row" id="l-res-boxes"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div><div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;margin-bottom:.38rem;">Lux Distribution</div><div class="chart-wrap" style="height:185px;"><canvas id="luxBarChart"></canvas></div></div>
+      <div><div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;margin-bottom:.38rem;">Actual vs Target</div><div class="chart-wrap" style="height:185px;"><canvas id="luxDonut"></canvas></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APPLIANCE ══ -->
+<div id="appliance" class="page">
+  <div class="page-title">🔌 Appliance Energy Audit + ROI</div>
+  <div class="page-sub">Baseline vs Optimized · Payback Period Calculator</div>
+  <div class="card">
+    <div class="card-title">⚙️ Setup</div>
+    <div class="form-grid">
+      <div class="fg"><label>Block</label><select id="a-block"><option>EEE Block</option><option>CSE Block</option><option>IT Block</option><option>Admin Block</option></select></div>
+      <div class="fg"><label>Tariff (₹/kWh)</label><input type="number" id="a-tariff" value="8" step=".5"></div>
+      <div class="fg"><label>Days/Month</label><input type="number" id="a-days" value="26"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Appliance List + Payback</div>
+    <div style="overflow-x:auto;">
+    <table class="app-table">
+      <thead><tr><th>Appliance</th><th>Qty</th><th>Base W</th><th>Opt W</th><th>Hrs/Day</th><th>Unit Cost ₹</th><th>Save/day</th><th>Save/mo</th><th>Payback</th><th>Saving%</th></tr></thead>
+      <tbody id="a-tbody">
+        <tr><td>Old Tube Light→LED</td><td><input type="number" class="lux-in" value="17"></td><td><input type="number" class="lux-in" value="40"></td><td><input type="number" class="lux-in" value="18"></td><td><input type="number" class="lux-in" value="6"></td><td><input type="number" class="lux-in" value="200"></td><td class="saving-day-cell">—</td><td class="saving-mo-cell">—</td><td class="payback-cell">—</td><td><span class="saving-pct">—</span><div class="saving-bar"><div class="saving-fill" style="width:0%"></div></div></td></tr>
+        <tr><td>Ceiling Fan→BLDC</td><td><input type="number" class="lux-in" value="13"></td><td><input type="number" class="lux-in" value="60"></td><td><input type="number" class="lux-in" value="28"></td><td><input type="number" class="lux-in" value="6"></td><td><input type="number" class="lux-in" value="3500"></td><td class="saving-day-cell">—</td><td class="saving-mo-cell">—</td><td class="payback-cell">—</td><td><span class="saving-pct">—</span><div class="saving-bar"><div class="saving-fill" style="width:0%"></div></div></td></tr>
+        <tr><td>Computer System</td><td><input type="number" class="lux-in" value="5"></td><td><input type="number" class="lux-in" value="100"></td><td><input type="number" class="lux-in" value="65"></td><td><input type="number" class="lux-in" value="3"></td><td><input type="number" class="lux-in" value="0"></td><td class="saving-day-cell">—</td><td class="saving-mo-cell">—</td><td class="payback-cell">—</td><td><span class="saving-pct">—</span><div class="saving-bar"><div class="saving-fill" style="width:0%"></div></div></td></tr>
+        <tr><td>AC 1T→Inverter</td><td><input type="number" class="lux-in" value="2"></td><td><input type="number" class="lux-in" value="1200"></td><td><input type="number" class="lux-in" value="900"></td><td><input type="number" class="lux-in" value="3"></td><td><input type="number" class="lux-in" value="35000"></td><td class="saving-day-cell">—</td><td class="saving-mo-cell">—</td><td class="payback-cell">—</td><td><span class="saving-pct">—</span><div class="saving-bar"><div class="saving-fill" style="width:0%"></div></div></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="display:flex;gap:.55rem;flex-wrap:wrap;">
+      <button class="btn btn-outline" style="font-size:.7rem;" onclick="addAppRow()">+ Add Appliance</button>
+      <button class="btn btn-green" onclick="runAppliance()">▶ Calculate</button>
+      <button class="btn btn-red" onclick="downloadReport()">⬇ PDF Report</button>
+    </div>
+  </div>
+  <div class="card" id="a-results" style="display:none;">
+    <div class="card-title">📊 Results — <span id="a-res-block"></span></div>
+    <div class="res-row" id="a-res-boxes"></div>
+    <div class="chart-wrap" style="height:235px;"><canvas id="appChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ══ OCCUPANCY ══ -->
+<div id="occupancy" class="page">
+  <div class="page-title">👁️ Occupancy Sensor Monitor</div>
+  <div class="page-sub">Toggle rooms to simulate PIR sensors · Linked to Blueprint Digital Twin</div>
+  <div id="demand-alert" class="demand-alert">
+    <div class="demand-alert-title">🚨 PEAK DEMAND ALERT — Sanctioned Load Risk!</div>
+    <div id="demand-alert-msg" style="font-size:.8rem;color:var(--red);line-height:1.6;"></div>
+  </div>
+  <div class="occ-stats">
+    <div class="occ-stat"><div class="occ-val" id="oc-rooms">0/12</div><div class="occ-lbl">Rooms Occupied</div></div>
+    <div class="occ-stat"><div class="occ-val" id="oc-load">0 kW</div><div class="occ-lbl">Active Load</div></div>
+    <div class="occ-stat"><div class="occ-val" id="oc-kva">0 kVA</div><div class="occ-lbl">Demand (kVA)</div></div>
+    <div class="occ-stat"><div class="occ-val" id="oc-saved">₹0</div><div class="occ-lbl">Saved Today (est.)</div></div>
+    <div class="occ-stat"><div class="occ-val" id="oc-pct">0%</div><div class="occ-lbl">% of Sanctioned</div></div>
+  </div>
+  <div class="card" style="margin-bottom:.75rem;">
+    <div class="card-title">⚡ Sanctioned Load Meter (250 kVA)</div>
+    <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:.28rem;"><span>0 kVA</span><span id="sanction-lbl">Sanctioned: 250 kVA</span><span>250 kVA</span></div>
+    <div class="demand-bar-outer"><div class="demand-bar-inner" id="demand-bar" style="width:0%;background:var(--green);"></div></div>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:.28rem;">🟢 Safe &lt;80% · 🟡 Caution 80-95% · 🔴 Danger &gt;95%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">🏫 Room Controls</div>
+    <div class="rooms-grid" id="rooms-grid"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📈 Live Load (ESP32 Feed)</div>
+    <div class="chart-wrap" style="height:185px;"><canvas id="occChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ══ DEMAND ══ -->
+<div id="demand" class="page">
+  <div class="page-title">⚡ Peak Demand Audit</div>
+  <div class="page-sub">TSSPDCL Category 2A · 11 KV HT · Contracted MD 400 KVA · ₹500/KVA/month</div>
+
+  <!-- BLOCK FILTER -->
+  <div class="card" style="padding:.75rem 1rem;">
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+      <span style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;">Block Filter</span>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;" id="block-filter-btns">
+        <button class="blk-btn active" onclick="setBlockFilter('ALL',this)">All Blocks</button>
+        <button class="blk-btn" onclick="setBlockFilter('EEE',this)">EEE</button>
+        <button class="blk-btn" onclick="setBlockFilter('CSE',this)">CSE</button>
+        <button class="blk-btn" onclick="setBlockFilter('IT',this)">IT</button>
+        <button class="blk-btn" onclick="setBlockFilter('Admin',this)">Admin</button>
+        <button class="blk-btn ece" onclick="setBlockFilter('ECE',this)">ECE 🔴</button>
+      </div>
+      <div id="block-cost-pill" style="margin-left:auto;background:var(--ap);border:1px solid var(--amber);border-radius:999px;padding:.2rem .75rem;font-size:.72rem;font-weight:700;color:var(--amber);white-space:nowrap;">Campus Total · ₹3,73,457/mo</div>
+    </div>
+  </div>
+
+  <!-- STEPPER NAV -->
+  <div style="display:flex;align-items:stretch;gap:0;margin-bottom:.1rem;" id="stepper-nav">
+    <button class="step-btn active" id="sbtn-1" onclick="goStep(1)">
+      <span class="step-num" id="snum-1">1</span>
+      <span class="step-label">Identify<br><small>When is the peak?</small></span>
+    </button>
+    <div class="step-connector"></div>
+    <button class="step-btn" id="sbtn-2" onclick="goStep(2)" disabled>
+      <span class="step-num" id="snum-2">2</span>
+      <span class="step-label">Diagnose<br><small>What causes it?</small></span>
+    </button>
+    <div class="step-connector"></div>
+    <button class="step-btn" id="sbtn-3" onclick="goStep(3)" disabled>
+      <span class="step-num" id="snum-3">3</span>
+      <span class="step-label">Solve<br><small>How to reduce it?</small></span>
+    </button>
+  </div>
+
+  <!-- ── STEP 1: IDENTIFY ── -->
+  <div class="step-panel active" id="step-panel-1">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:.2rem;">📈 24-Hour Campus Load Profile</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.85rem;">Hover over any bar to see demand charge for that hour. Red zone = above 80% of sanctioned load (250 KVA).</div>
+
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem;">
+        <button class="period-btn active" onclick="setLoadProfile('weekday',this)">Weekday</button>
+        <button class="period-btn" onclick="setLoadProfile('weekend',this)">Weekend</button>
+        <button class="period-btn" onclick="setLoadProfile('exam',this)">Exam Season</button>
+      </div>
+
+      <div style="position:relative;">
+        <!-- Penalty zone overlay label -->
+        <div id="penalty-label" style="position:absolute;top:4px;right:8px;background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.3);color:#c0392b;font-size:.62rem;font-weight:700;padding:.18rem .55rem;border-radius:6px;z-index:2;pointer-events:none;">⚠ Penalty Zone &gt;200 KVA</div>
+        <div class="chart-wrap" style="height:240px;"><canvas id="loadProfileChart"></canvas></div>
+      </div>
+
+      <div id="peak-finding" style="margin-top:.85rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.65rem;"></div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:1rem;">
+        <button class="btn btn-green" onclick="goStep(2)">Next — Diagnose →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: DIAGNOSE ── -->
+  <div class="step-panel" id="step-panel-2">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:.2rem;">🔬 Equipment Contribution at Peak (10AM–12PM)</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.85rem;">Which equipment and blocks drive the peak KVA. Use the block filter above to isolate a department's share.</div>
+
+      <!-- ECE block notice (shown only when ECE filter active) -->
+      <div id="ece-notice" style="display:none;margin-bottom:.85rem;padding:.75rem 1rem;background:#fff3e0;border-left:4px solid #e67e22;border-radius:0 10px 10px 0;font-size:.78rem;line-height:1.8;">
+        <strong style="color:#e67e22;">⚠️ ECE Block — Highest Campus Cost · ₹1,04,560/month</strong><br>
+        Equipment-level breakdown is unavailable because the ECE structural drawing has not yet been obtained from the Civil Department.
+        Despite this, ECE's total energy cost exceeds every other block. This justifies prioritising ECE for the next phase of the audit and for immediate demand-side management discussions with the HOD.
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.77rem;">
+          <thead>
+            <tr style="background:var(--ap);">
+              <th style="padding:.5rem .75rem;text-align:left;color:var(--amber);font-size:.65rem;text-transform:uppercase;">Equipment / Area</th>
+              <th style="padding:.5rem .75rem;text-align:left;color:var(--amber);font-size:.65rem;text-transform:uppercase;">Block</th>
+              <th style="padding:.5rem .75rem;text-align:right;color:var(--amber);font-size:.65rem;text-transform:uppercase;">Peak KVA</th>
+              <th style="padding:.5rem .75rem;text-align:right;color:var(--amber);font-size:.65rem;text-transform:uppercase;">% of Total</th>
+              <th style="padding:.5rem .75rem;text-align:left;color:var(--amber);font-size:.65rem;text-transform:uppercase;">Cost/Month</th>
+              <th style="padding:.5rem .75rem;text-align:left;color:var(--amber);font-size:.65rem;text-transform:uppercase;">Priority</th>
+            </tr>
+          </thead>
+          <tbody id="equip-tbody"></tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:.85rem;">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem;">KVA Contribution — <span id="equip-chart-label">All Blocks</span></div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="equipChart"></canvas></div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;margin-top:1rem;">
+        <button class="btn btn-outline" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-green" onclick="goStep(3)">Next — Solve →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: SOLVE ── -->
+  <div class="step-panel" id="step-panel-3">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:.2rem;">💡 Solution — Load Staggering</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.85rem;">Drag each load's slider to set its start time. The chart and savings update in real time.</div>
+
+      <!-- Floating savings badge -->
+      <div id="savings-badge" style="display:flex;align-items:center;gap:.75rem;background:var(--gp);border:2px solid var(--green);border-radius:12px;padding:.65rem 1rem;margin-bottom:1rem;">
+        <div style="text-align:center;">
+          <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;">Peak Before</div>
+          <div style="font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--red);" id="sb-before">310 KVA</div>
+        </div>
+        <div style="font-size:1.2rem;color:var(--muted);">→</div>
+        <div style="text-align:center;">
+          <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;">Peak After</div>
+          <div style="font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--green);" id="sb-after">— KVA</div>
+        </div>
+        <div style="margin-left:auto;text-align:right;">
+          <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;">Potential Saving</div>
+          <div style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:var(--green);" id="sb-saving">₹0 / month</div>
+        </div>
+      </div>
+
+      <!-- Drag sliders -->
+      <div id="stagger-sliders" style="display:grid;gap:.6rem;margin-bottom:1rem;"></div>
+
+      <!-- Live chart -->
+      <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem;">Before vs After — Peak Window (9AM–12PM)</div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="staggerChart"></canvas></div>
+
+      <!-- Recommendation box -->
+      <div id="stagger-reco" style="margin-top:.85rem;padding:.75rem .9rem;background:var(--ap);border-left:4px solid var(--amber);border-radius:0 10px 10px 0;font-size:.77rem;line-height:1.9;display:none;">
+        <strong style="color:var(--amber);">💡 Implementation Note</strong><br>
+        After staggering, monitor actual demand for 3 months, then apply to <strong>TSSPDCL to revise contracted MD</strong> downward.
+        This reduces the fixed demand charge permanently — zero capital investment required.
+      </div>
+
+      <div style="display:flex;justify-content:flex-start;margin-top:1rem;">
+        <button class="btn btn-outline" onclick="goStep(2)">← Back</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ BLUEPRINT — REAL FLOOR PLANS ══ -->
+<div id="blueprint" class="page">
+  <div class="page-title">🗺️ Blueprint Energy Heat Map</div>
+  <div class="page-sub">5 blocks audited · Real floor plans for EEE, CSE, IT, Admin · ECE Block floor plan pending structural drawing</div>
+
+  <div class="card">
+    <div class="bp-controls">
+      <select id="bp-block" class="btn btn-outline" style="font-family:var(--font-mono);font-size:.76rem;" onchange="switchBlock()">
+        <option value="EEE">EEE Block</option>
+        <option value="CSE">CSE Block</option>
+        <option value="IT">IT Block (Library/IT Dept)</option>
+        <option value="ADMIN">Admin Block</option>
+        <option value="ECE">ECE Block</option>
+      </select>
+      <button class="btn btn-amber" onclick="applyHeat()">🔥 Apply Heat Map</button>
+      <button class="btn btn-outline" onclick="clearHeat()">✕ Clear Heat</button>
+      <button class="btn btn-red" onclick="downloadReport()">⬇ PDF Report</button>
+    </div>
+
+    <div class="floor-tabs" id="floor-tabs"></div>
+
+    <p style="font-size:.75rem;color:var(--muted);margin-bottom:.65rem;">
+      🔗 <strong>Digital Twin:</strong> Toggle rooms in Occupancy tab → hotspots turn 🟢 green automatically.
+      Click any room on the plan to see its energy details.
+    </p>
+
+    <div class="bp-outer" style="position:relative;">
+      <canvas id="bp-canvas" height="460"></canvas>
+      <div class="room-tooltip" id="room-tooltip"></div>
+    </div>
+
+    <div class="heat-legend">
+      <span>Energy Intensity:</span>
+      <span style="color:var(--green);">Low</span>
+      <div class="heat-grad"></div>
+      <span style="color:var(--red);">High</span>
+      <span style="margin-left:1rem;font-size:.63rem;">Click room on plan to inspect · Toggle rooms in Occupancy tab to update heat map</span>
+    </div>
+  </div>
+
+  <!-- ══ TIMETABLE UPLOAD ══ -->
+  <div class="card" id="tt-card">
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+      <span>📅 Timetable Upload — Accurate Working Hours</span>
+      <span style="font-size:.68rem;color:var(--muted);font-weight:400;">Upload per-year timetable → compute real occupied hours → update heat map energy accurately</span>
+    </div>
+
+    <div style="display:flex;gap:.4rem;margin-bottom:.9rem;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:.72rem;color:var(--muted);margin-right:.3rem;">Year:</span>
+      <button id="tt-y1" class="btn btn-green tt-ytab" onclick="ttSelectYear(1)">I Year</button>
+      <button id="tt-y2" class="btn btn-outline tt-ytab" onclick="ttSelectYear(2)">II Year</button>
+      <button id="tt-y3" class="btn btn-outline tt-ytab" onclick="ttSelectYear(3)">III Year</button>
+      <button id="tt-y4" class="btn btn-outline tt-ytab" onclick="ttSelectYear(4)">IV Year</button>
+    </div>
+
+    <div id="tt-drop" onclick="document.getElementById('tt-file').click()"
+      style="border:2px dashed var(--border);border-radius:10px;padding:1.1rem 1rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.8rem;background:#fafcfb;">
+      <div style="font-size:1.5rem;margin-bottom:.3rem;">📂</div>
+      <div style="font-size:.78rem;font-weight:600;color:var(--green);margin-bottom:.2rem;">Click to upload timetable CSV</div>
+      <div style="font-size:.68rem;color:var(--muted);">Columns: Room, Subject, Day, Start (HH:MM), End (HH:MM)</div>
+      <input type="file" id="tt-file" accept=".csv,.txt" style="display:none" onchange="ttHandleFile(event)">
+    </div>
+
+    <details style="margin-bottom:.8rem;">
+      <summary style="font-size:.75rem;color:var(--green);cursor:pointer;font-weight:600;user-select:none;">✏️ Or paste timetable rows manually</summary>
+      <div style="margin-top:.6rem;">
+        <div style="font-size:.68rem;color:var(--muted);margin-bottom:.4rem;">
+          Format: Room Name, Subject, Day, Start(HH:MM), End(HH:MM)<br>
+          Example: EEE Machine Lab, Power Systems, Mon, 09:00, 11:00
+        </div>
+        <textarea id="tt-manual" rows="5"
+          style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:.6rem .8rem;font-family:var(--font-mono);font-size:.72rem;resize:vertical;outline:none;"
+          placeholder="Paste rows here, one per line..."></textarea>
+        <button class="btn btn-outline" style="margin-top:.4rem;" onclick="ttParseManual()">Parse & Apply</button>
+      </div>
+    </details>
+
+    <div id="tt-status-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.8rem;">
+      <div class="tt-stat-card" id="tt-stat-1"><div class="tt-year">I Year</div><div class="tt-hrs" id="tt-hrs-1">– h/day</div><div class="tt-rooms" id="tt-rms-1">No data</div></div>
+      <div class="tt-stat-card" id="tt-stat-2"><div class="tt-year">II Year</div><div class="tt-hrs" id="tt-hrs-2">– h/day</div><div class="tt-rooms" id="tt-rms-2">No data</div></div>
+      <div class="tt-stat-card" id="tt-stat-3"><div class="tt-year">III Year</div><div class="tt-hrs" id="tt-hrs-3">– h/day</div><div class="tt-rooms" id="tt-rms-3">No data</div></div>
+      <div class="tt-stat-card" id="tt-stat-4"><div class="tt-year">IV Year</div><div class="tt-hrs" id="tt-hrs-4">– h/day</div><div class="tt-rooms" id="tt-rms-4">No data</div></div>
+    </div>
+
+    <div id="tt-hours-wrap" style="display:none;">
+      <div style="font-size:.75rem;font-weight:600;color:var(--text);margin-bottom:.5rem;">
+        Computed Daily Working Hours per Room —
+        <span id="tt-year-label">I Year</span>
+        <span style="display:inline-block;background:var(--gp);color:var(--green);font-size:.65rem;padding:2px 8px;border-radius:20px;margin-left:.5rem;border:1px solid rgba(26,122,60,.2);">Heat map updated</span>
+      </div>
+      <div id="tt-hours-table" style="overflow-x:auto;font-size:.75rem;"></div>
+    </div>
+
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.65rem;">
+      <button class="btn btn-amber" onclick="ttApplyToHeatmap()">🔥 Apply to Heat Map</button>
+      <button class="btn btn-outline" onclick="ttDownloadSummary()">⬇ Export CSV</button>
+      <button class="btn btn-outline" onclick="ttDownloadSample()" style="color:var(--muted);">Sample Template</button>
+      <button class="btn btn-outline" onclick="ttClear()" style="color:var(--red);border-color:var(--red);">✕ Clear</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔴 High-Energy Zones — <span id="bp-block-label">EEE Block</span></div>
+    <div id="hotspot-list" style="font-size:.78rem;color:var(--muted);">Apply heat map to detect zones.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💡 Block-specific Recommendations</div>
+    <div id="bp-recs" style="font-size:.78rem;line-height:1.9;color:var(--muted);">Select a block and apply heat map.</div>
+  </div>
+</div>
+
+<!-- ══ SOLAR RENEWABLES HUB ══ -->
+<div id="solar" class="page">
+  <div class="page-title">☀️ Solar Renewables Hub</div>
+  <div class="page-sub">PZEM-017 · ESP32 Nodes · 181 kWp Campus Array · Admin 60 kWp · IT 50 kWp · ECE 40 kWp · CSE 30 kWp · EEE 1 kWp</div>
+
+  <!-- BLOCK-WISE BREAKDOWN -->
+  <div class="card" style="padding:.85rem 1.1rem;margin-bottom:1rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+      <div class="card-title" style="margin-bottom:0;">🏢 Block-wise Solar Installation</div>
+      <div style="font-family:var(--font-display);font-size:.78rem;font-weight:800;color:var(--green);">Total Campus: 181 kWp</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-top:.85rem;">
+      <!-- Admin -->
+      <div style="background:rgba(26,122,60,.06);border:1px solid rgba(26,122,60,.18);border-radius:9px;padding:.75rem .85rem;">
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Admin Block</div>
+        <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--green);line-height:1.1;margin:.25rem 0;">60 <span style="font-size:.8rem;font-weight:500;">kWp</span></div>
+        <div style="height:5px;background:#e2e8f0;border-radius:3px;"><div style="width:${Math.round(60/181*100)}%;height:100%;background:var(--green);border-radius:3px;"></div></div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:.3rem;">33% of campus · Largest array</div>
+        <div style="font-size:.68rem;color:var(--green);font-weight:600;margin-top:.2rem;">~264 kWh/day</div>
+      </div>
+      <!-- IT -->
+      <div style="background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.15);border-radius:9px;padding:.75rem .85rem;">
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">IT Block</div>
+        <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--blue);line-height:1.1;margin:.25rem 0;">50 <span style="font-size:.8rem;font-weight:500;">kWp</span></div>
+        <div style="height:5px;background:#e2e8f0;border-radius:3px;"><div style="width:28%;height:100%;background:var(--blue);border-radius:3px;"></div></div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:.3rem;">28% of campus</div>
+        <div style="font-size:.68rem;color:var(--blue);font-weight:600;margin-top:.2rem;">~220 kWh/day</div>
+      </div>
+      <!-- ECE -->
+      <div style="background:rgba(217,119,6,.05);border:1px solid rgba(217,119,6,.18);border-radius:9px;padding:.75rem .85rem;">
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">ECE Block</div>
+        <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--amber);line-height:1.1;margin:.25rem 0;">40 <span style="font-size:.8rem;font-weight:500;">kWp</span></div>
+        <div style="height:5px;background:#e2e8f0;border-radius:3px;"><div style="width:22%;height:100%;background:var(--amber);border-radius:3px;"></div></div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:.3rem;">22% of campus</div>
+        <div style="font-size:.68rem;color:var(--amber);font-weight:600;margin-top:.2rem;">~176 kWh/day</div>
+      </div>
+      <!-- CSE -->
+      <div style="background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.15);border-radius:9px;padding:.75rem .85rem;">
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">CSE Block</div>
+        <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--purple);line-height:1.1;margin:.25rem 0;">30 <span style="font-size:.8rem;font-weight:500;">kWp</span></div>
+        <div style="height:5px;background:#e2e8f0;border-radius:3px;"><div style="width:17%;height:100%;background:var(--purple);border-radius:3px;"></div></div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:.3rem;">17% of campus</div>
+        <div style="font-size:.68rem;color:var(--purple);font-weight:600;margin-top:.2rem;">~132 kWh/day</div>
+      </div>
+      <!-- EEE -->
+      <div style="background:rgba(220,38,38,.04);border:1px solid rgba(220,38,38,.12);border-radius:9px;padding:.75rem .85rem;">
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">EEE Block</div>
+        <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--red);line-height:1.1;margin:.25rem 0;">1 <span style="font-size:.8rem;font-weight:500;">kWp</span></div>
+        <div style="height:5px;background:#e2e8f0;border-radius:3px;"><div style="width:1%;height:100%;background:var(--red);border-radius:3px;"></div></div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:.3rem;">0.6% · Pilot / lab unit</div>
+        <div style="font-size:.68rem;color:var(--red);font-weight:600;margin-top:.2rem;">~4.4 kWh/day</div>
+      </div>
+      <!-- Summary note -->
+      <div style="background:#f8fafc;border:1px dashed var(--border);border-radius:9px;padding:.75rem .85rem;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem;">At 5.5 PSH · Hyderabad</div>
+        <div style="font-size:.72rem;font-weight:600;margin-bottom:.2rem;">~796 kWh/day generated</div>
+        <div style="font-size:.72rem;font-weight:600;margin-bottom:.2rem;">Campus uses ~310 kWh/day</div>
+        <div style="font-size:.72rem;font-weight:700;color:var(--green);">~486 kWh/day exported ☀️</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEATHER SCENARIO SIMULATOR -->
+  <div class="card" style="padding:.8rem 1.1rem;margin-bottom:1rem;" id="weather-scenario-card">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:.78rem;font-weight:800;color:var(--text);">Weather Scenario Simulator</div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:.1rem;">Switch conditions — all charts, alerts and scheduling update in real time</div>
+      </div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-left:auto;" id="weather-btns">
+        <button class="weather-btn active" onclick="setWeather('clear',this)">☀️ Clear</button>
+        <button class="weather-btn" onclick="setWeather('partly',this)">🌤️ Partly Cloudy</button>
+        <button class="weather-btn" onclick="setWeather('overcast',this)">⛅ Overcast</button>
+        <button class="weather-btn" onclick="setWeather('storm',this)">⛈️ Thunderstorm</button>
+      </div>
+    </div>
+    <!-- Scenario impact banner — hidden when clear -->
+    <div id="scenario-banner" style="display:none;margin-top:.75rem;padding:.65rem .9rem;border-radius:8px;font-size:.76rem;line-height:1.8;"></div>
+
+    <!-- Block-level live output — updates with weather -->
+    <div id="block-output-panel" style="margin-top:.85rem;">
+      <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">Live Block Output — <span id="block-output-label">Clear Sky · 100% irradiance</span></div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;" id="block-output-grid"></div>
+    </div>
+  </div>
+
+  <!-- TOP HERO ROW: circular gauge + key stats -->
+  <div style="display:grid;grid-template-columns:220px 1fr;gap:1rem;margin-bottom:1rem;">
+
+    <!-- Circular gauge card -->
+    <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem 1rem;">
+      <div style="font-family:var(--font-display);font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem;">Solar Contribution</div>
+      <div style="position:relative;width:150px;height:150px;">
+        <canvas id="solarGaugeChart" width="150" height="150"></canvas>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--green);" id="solar-pct-val">--</div>
+          <div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;">of campus load</div>
+        </div>
+      </div>
+      <div style="margin-top:.7rem;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:1rem;font-weight:700;color:var(--green);" id="solar-watt-val">-- W</div>
+        <div style="font-size:.63rem;color:var(--muted);">Current Output</div>
+      </div>
+    </div>
+
+    <!-- Live stat cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;align-content:start;">
+      <div class="stat-card" style="border-top:3px solid var(--green);">
+        <div class="stat-icon">☀️</div>
+        <div class="stat-val" id="sol-voltage">-- <span style="font-size:.7rem;font-weight:400;">V</span></div>
+        <div class="stat-lbl">Panel Voltage</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--amber);">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-val" id="sol-current">-- <span style="font-size:.7rem;font-weight:400;">A</span></div>
+        <div class="stat-lbl">Panel Current</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--blue);">
+        <div class="stat-icon">📊</div>
+        <div class="stat-val" id="sol-efficiency">-- <span style="font-size:.7rem;font-weight:400;">%</span></div>
+        <div class="stat-lbl">Panel Efficiency</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--purple);">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-val" id="sol-inv-temp">-- <span style="font-size:.7rem;font-weight:400;">°C</span></div>
+        <div class="stat-lbl">Inverter Temp</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--green);">
+        <div class="stat-icon">🔋</div>
+        <div class="stat-val" id="sol-soc">-- <span style="font-size:.7rem;font-weight:400;">%</span></div>
+        <div class="stat-lbl">Battery SoC</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--amber);">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-val" id="sol-ttf" style="font-size:1rem;">--h --m</div>
+        <div class="stat-lbl">Time to Full</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--green);">
+        <div class="stat-icon">🌿</div>
+        <div class="stat-val" id="sol-co2">-- <span style="font-size:.7rem;font-weight:400;">kg</span></div>
+        <div class="stat-lbl">CO₂ Avoided Today</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--blue);">
+        <div class="stat-icon">🌳</div>
+        <div class="stat-val" id="sol-trees">--</div>
+        <div class="stat-lbl">Tree Equivalent</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALTH ALERTS -->
+  <div id="solar-alerts" style="margin-bottom:1rem;"></div>
+
+  <!-- DUCK CURVE + GRID OFFSET -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+    <div class="card">
+      <div class="card-title">📈 Duck Curve — Generation vs Demand</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.7rem;" id="duck-subtitle">With 181 kWp, solar generation far exceeds campus demand on clear days. Surplus is exported to TSSPDCL grid. Gap at morning startup is the only grid-dependent window.</div>
+      <div class="chart-wrap" style="height:210px;"><canvas id="duckCurveChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔋 Grid vs Solar — Today's Offset</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.7rem;">How much of today's consumption came from the rooftop array vs the TSSPDCL grid.</div>
+      <div class="chart-wrap" style="height:160px;"><canvas id="gridOffsetChart"></canvas></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.7rem;">
+        <div class="res-box">
+          <div class="res-val" id="sol-gen-today">-- <span style="font-size:.65rem;font-weight:400;">kWh</span></div>
+          <div class="res-lbl">Solar Generated Today</div>
+        </div>
+        <div class="res-box" style="border-color:rgba(26,122,60,.3);background:rgba(26,122,60,.05);">
+          <div class="res-val" id="sol-export-today" style="color:var(--green);">-- <span style="font-size:.65rem;font-weight:400;">kWh</span></div>
+          <div class="res-lbl">Exported to Grid</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUN-CAST + SMART SCHEDULE -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+    <div class="card">
+      <div class="card-title">🌤️ Sun-Cast — 5-Day Forecast</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem;">Predicted solar generation based on OpenWeatherMap irradiance forecast for Hyderabad (17.4°N).</div>
+      <div id="suncast-grid" style="display:grid;gap:.45rem;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🤖 Smart Scheduling — Today</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem;" id="schedule-subtitle">With 181 kWp, the campus is a net exporter during sunny hours. Run heavy loads 11AM–3PM to maximise self-consumption before export.</div>
+      <div id="smart-schedule" style="display:grid;gap:.45rem;"></div>
+    </div>
+  </div>
+
+  <!-- BATTERY + MAINTENANCE -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="card">
+      <div class="card-title">🔋 Battery Bank State</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem;">3× 200Ah 12V VRLA batteries in series-parallel. Monitored via ESP32 voltage divider.</div>
+      <div id="battery-bar-wrap" style="margin-bottom:.85rem;">
+        <div style="display:flex;justify-content:space-between;font-size:.68rem;margin-bottom:.3rem;">
+          <span style="color:var(--muted);">State of Charge</span>
+          <span style="font-weight:700;color:var(--green);" id="bat-soc-lbl">-- %</span>
+        </div>
+        <div style="height:18px;background:#e2e8f0;border-radius:9px;overflow:hidden;">
+          <div id="bat-soc-bar" style="height:100%;border-radius:9px;background:var(--green);width:0%;transition:width .6s ease;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin-top:.3rem;">
+          <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;">
+        <div class="res-box"><div class="res-val" id="bat-v">-- <span style="font-size:.6rem;font-weight:400;">V</span></div><div class="res-lbl">Voltage</div></div>
+        <div class="res-box"><div class="res-val" id="bat-a">-- <span style="font-size:.6rem;font-weight:400;">A</span></div><div class="res-lbl">Current</div></div>
+        <div class="res-box"><div class="res-val" id="bat-kwh">-- <span style="font-size:.6rem;font-weight:400;">kWh</span></div><div class="res-lbl">Stored Energy</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔧 Panel Health & Maintenance</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem;">Automated alerts from PZEM-017 readings vs expected irradiance model.</div>
+      <div id="panel-health" style="display:grid;gap:.45rem;"></div>
+    </div>
+  </div>
+
+</div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+let auditLog=[], totalSavedMonth=0, costSavedMonth=0, currentPeriod='month';
+let luxBarChart,luxDonut,appChart,savingsChart,blockCostChart,occChart;
+let heatActive=false, lastAudit={};
+const SANCTIONED_KVA=250;
+
+// ═══════════════════════════════════
+// REAL FLOOR PLAN DATA
+// Drawn from official GNITS structural drawings
+// ═══════════════════════════════════
+
+// Each block has floors, each floor has rooms array
+// Room: {id, label, x,y,w,h (0-1 normalised), type, kw, roomIdx (links to ROOMS array)}
+const BLOCKS = {
+  EEE: {
+    name: 'EEE Block',
+    color: '#00c9a7',
+    shape: 'rect',   // long rectangular block
+    floors: [
+      {
+        name: 'Ground Floor',
+        rooms: [
+          {id:'eee-gf-1', label:'Electro Machine Lab\n72\'×27\'6"', x:.02, y:.08, w:.45, h:.76, type:'lab', kw:45.2, roomIdx:0},
+          {id:'eee-gf-2', label:'B.E.E. Lab\n24\'×27\'6"', x:.57, y:.08, w:.18, h:.76, type:'lab', kw:18.4, roomIdx:null},
+          {id:'eee-gf-3', label:'Power\nElec Lab\n24\'×35\'', x:.77, y:.08, w:.21, h:.76, type:'lab', kw:22.1, roomIdx:null},
+          {id:'eee-gf-4', label:'Store', x:.02, y:.6, w:.1, h:.24, type:'util', kw:0.5, roomIdx:null},
+          {id:'eee-gf-5', label:'Corridor', x:.02, y:.85, w:.96, h:.08, type:'corridor', kw:2.1, roomIdx:null},
+        ]
+      },
+      {
+        name: '1st Floor',
+        rooms: [
+          {id:'eee-1f-1', label:'Micro Processor Lab\n36\'×27\'6"', x:.12, y:.08, w:.35, h:.75, type:'lab', kw:28.4, roomIdx:1},
+          {id:'eee-1f-2', label:'L.H.①\n24\'×35\'6"', x:.02, y:.08, w:.08, h:.75, type:'classroom', kw:8.1, roomIdx:null},
+          {id:'eee-1f-3', label:'HOD EEE\n24\'×15\'', x:.56, y:.08, w:.18, h:.42, type:'office', kw:3.5, roomIdx:null},
+          {id:'eee-1f-4', label:'Prog Room', x:.56, y:.52, w:.18, h:.31, type:'office', kw:2.8, roomIdx:null},
+          {id:'eee-1f-5', label:'L.H.②\n23\'×35\'6"', x:.76, y:.08, w:.22, h:.75, type:'classroom', kw:9.2, roomIdx:null},
+          {id:'eee-1f-6', label:'Staff Room', x:.37, y:.08, w:.17, h:.32, type:'office', kw:2.1, roomIdx:null},
+          {id:'eee-1f-7', label:'Corridor', x:.02, y:.85, w:.96, h:.08, type:'corridor', kw:1.8, roomIdx:null},
+        ]
+      },
+      {
+        name: '2nd Floor',
+        rooms: [
+          {id:'eee-2f-1', label:'Lab Control System\n35\'8"×27\'6"', x:.12, y:.08, w:.28, h:.75, type:'lab', kw:21.0, roomIdx:null},
+          {id:'eee-2f-2', label:'Dept Library\n23\'×27\'6"', x:.08, y:.08, w:.12, h:.38, type:'library', kw:5.5, roomIdx:null},
+          {id:'eee-2f-3', label:'L.H.③\n23\'×35\'6"', x:.02, y:.08, w:.06, h:.75, type:'classroom', kw:8.4, roomIdx:null},
+          {id:'eee-2f-4', label:'Staff Room', x:.41, y:.08, w:.14, h:.35, type:'office', kw:2.2, roomIdx:null},
+          {id:'eee-2f-5', label:'Electrical Lab\n35\'×27\'6"', x:.57, y:.08, w:.22, h:.75, type:'lab', kw:19.5, roomIdx:null},
+          {id:'eee-2f-6', label:'L.H.④\n23\'×35\'6"', x:.81, y:.08, w:.17, h:.75, type:'classroom', kw:8.4, roomIdx:null},
+          {id:'eee-2f-7', label:'Corridor', x:.02, y:.85, w:.96, h:.08, type:'corridor', kw:1.8, roomIdx:null},
+        ]
+      },
+      {
+        name: '3rd Floor',
+        rooms: [
+          {id:'eee-3f-1', label:'Lab Power Elec\n23\'×35\'6"', x:.02, y:.08, w:.2, h:.75, type:'lab', kw:24.3, roomIdx:null},
+          {id:'eee-3f-2', label:'Simulation Lab\n23\'×27\'6"', x:.24, y:.08, w:.2, h:.75, type:'lab', kw:16.8, roomIdx:null},
+          {id:'eee-3f-3', label:'Staff×2', x:.46, y:.08, w:.1, h:.75, type:'office', kw:2.8, roomIdx:null},
+          {id:'eee-3f-4', label:'Staff Room\n23\'×27\'6"', x:.57, y:.08, w:.16, h:.75, type:'office', kw:3.2, roomIdx:null},
+          {id:'eee-3f-5', label:'Seminar Hall\n47\'8"×27\'6"', x:.74, y:.08, w:.24, h:.75, type:'seminar', kw:12.5, roomIdx:null},
+          {id:'eee-3f-6', label:'Corridor', x:.02, y:.85, w:.96, h:.08, type:'corridor', kw:1.8, roomIdx:null},
+        ]
+      }
+    ]
+  },
+
+  CSE: {
+    name: 'CSE Block',
+    color: '#2980b9',
+    shape: 'rect',
+    floors: [
+      {
+        name: 'Ground Floor',
+        rooms: [
+          {id:'cse-gf-1', label:'Canteen\n48\'5"×27\'6"', x:.02, y:.05, w:.55, h:.42, type:'util', kw:8.5, roomIdx:null},
+          {id:'cse-gf-2', label:'Kitchen\n24\'×35\'', x:.02, y:.05, w:.22, h:.28, type:'util', kw:12.0, roomIdx:null},
+          {id:'cse-gf-3', label:'Staff Rooms\n36\'×27\'6"', x:.02, y:.45, w:.35, h:.42, type:'office', kw:5.5, roomIdx:3},
+          {id:'cse-gf-4', label:'Dept Library\n12\'×27\'6"', x:.38, y:.45, w:.12, h:.42, type:'library', kw:4.8, roomIdx:null},
+          {id:'cse-gf-5', label:'Staff Room\n24\'×35\'', x:.02, y:.78, w:.2, h:.16, type:'office', kw:3.2, roomIdx:null},
+          {id:'cse-gf-6', label:'Corridor', x:.54, y:.05, w:.44, h:.88, type:'corridor', kw:2.5, roomIdx:null},
+        ]
+      },
+      {
+        name: '1st Floor',
+        rooms: [
+          {id:'cse-1f-1', label:'Computer Lab-I\n36\'×27\'6"', x:.66, y:.05, w:.32, h:.88, type:'complab', kw:46.8, roomIdx:2},
+          {id:'cse-1f-2', label:'Computer Lab-II\n36\'×27\'6"', x:.40, y:.05, w:.24, h:.42, type:'complab', kw:40.2, roomIdx:null},
+          {id:'cse-1f-3', label:'Computer Lab-III\n48\'×27\'6"', x:.14, y:.05, w:.24, h:.42, type:'complab', kw:50.7, roomIdx:null},
+          {id:'cse-1f-4', label:'Computer Lab-IV\n24\'×35\'', x:.02, y:.05, w:.1, h:.42, type:'complab', kw:38.1, roomIdx:null},
+          {id:'cse-1f-5', label:'Staff Room', x:.40, y:.52, w:.24, h:.42, type:'office', kw:3.2, roomIdx:null},
+          {id:'cse-1f-6', label:'Corridor', x:.02, y:.42, w:.62, h:.08, type:'corridor', kw:2.2, roomIdx:null},
+        ]
+      },
+      {
+        name: '2nd Floor',
+        rooms: [
+          {id:'cse-2f-1', label:'L.H-I\n24\'×35\'6"', x:.02, y:.05, w:.15, h:.88, type:'classroom', kw:8.1, roomIdx:null},
+          {id:'cse-2f-2', label:'L.H-II\n36\'×27\'6"', x:.19, y:.05, w:.2, h:.88, type:'classroom', kw:9.8, roomIdx:null},
+          {id:'cse-2f-3', label:'HOD Room\n12\'×27\'6"', x:.41, y:.05, w:.1, h:.42, type:'office', kw:3.5, roomIdx:null},
+          {id:'cse-2f-4', label:'Common Room\n12\'×27\'6"', x:.52, y:.05, w:.1, h:.42, type:'util', kw:2.1, roomIdx:null},
+          {id:'cse-2f-5', label:'Dept Exam\n12\'×27\'6"', x:.63, y:.05, w:.1, h:.42, type:'office', kw:2.8, roomIdx:null},
+          {id:'cse-2f-6', label:'Staff Room\n12\'×27\'6"', x:.74, y:.05, w:.1, h:.42, type:'office', kw:3.2, roomIdx:null},
+          {id:'cse-2f-7', label:'L.H-III\n12\'×27\'6"', x:.85, y:.05, w:.13, h:.42, type:'classroom', kw:7.2, roomIdx:null},
+          {id:'cse-2f-8', label:'L.H-IV\n24\'×35\'', x:.85, y:.52, w:.13, h:.42, type:'classroom', kw:9.5, roomIdx:null},
+          {id:'cse-2f-9', label:'Corridor', x:.41, y:.42, w:.57, h:.08, type:'corridor', kw:2.0, roomIdx:null},
+        ]
+      },
+      {
+        name: '3rd Floor',
+        rooms: [
+          {id:'cse-3f-1', label:'L.H-V\n24\'×35\'6"', x:.02, y:.05, w:.15, h:.88, type:'classroom', kw:8.1, roomIdx:null},
+          {id:'cse-3f-2', label:'L.H-VI\n36\'×27\'6"', x:.19, y:.05, w:.25, h:.88, type:'classroom', kw:9.8, roomIdx:null},
+          {id:'cse-3f-3', label:'Staff Room\n12\'×27\'6"', x:.46, y:.05, w:.1, h:.42, type:'office', kw:3.2, roomIdx:null},
+          {id:'cse-3f-4', label:'Staff Room\n24\'×18\'', x:.46, y:.52, w:.1, h:.42, type:'office', kw:2.8, roomIdx:null},
+          {id:'cse-3f-5', label:'Common Room', x:.58, y:.05, w:.12, h:.88, type:'util', kw:2.5, roomIdx:null},
+          {id:'cse-3f-6', label:'Computer Lab-10\n40\'×27\'6"', x:.72, y:.05, w:.26, h:.88, type:'complab', kw:42.0, roomIdx:null},
+        ]
+      },
+      {
+        name: '4th Floor',
+        rooms: [
+          {id:'cse-4f-1', label:'L.H-VII\n24\'×35\'6"', x:.02, y:.05, w:.14, h:.88, type:'classroom', kw:8.1, roomIdx:null},
+          {id:'cse-4f-2', label:'L.H-VIII\n36\'×27\'6"', x:.18, y:.05, w:.22, h:.88, type:'classroom', kw:9.8, roomIdx:null},
+          {id:'cse-4f-3', label:'Staff Room\n12\'×27\'6"', x:.42, y:.05, w:.1, h:.42, type:'office', kw:3.2, roomIdx:null},
+          {id:'cse-4f-4', label:'Common\nToilets', x:.54, y:.05, w:.08, h:.42, type:'util', kw:0.5, roomIdx:null},
+          {id:'cse-4f-5', label:'L.H-IX\n30\'×27\'6"', x:.64, y:.05, w:.18, h:.88, type:'classroom', kw:9.0, roomIdx:null},
+          {id:'cse-4f-6', label:'L.H-X\n36\'×27\'6"', x:.84, y:.05, w:.14, h:.88, type:'classroom', kw:9.8, roomIdx:null},
+        ]
+      }
+    ]
+  },
+
+  IT: {
+    name: 'IT Block (Library/IT Dept)',
+    color: '#8e44ad',
+    shape: 'square',
+    floors: [
+      {
+        name: 'Ground Floor',
+        rooms: [
+          {id:'it-gf-1', label:'Library\n17.10×12.20', x:.28, y:.05, w:.5, h:.38, type:'library', kw:18.5, roomIdx:10},
+          {id:'it-gf-2', label:'Library\n12.20×38.70', x:.80, y:.05, w:.18, h:.88, type:'library', kw:12.4, roomIdx:null},
+          {id:'it-gf-3', label:'Common Room\n7.20×7.80', x:.02, y:.05, w:.12, h:.28, type:'util', kw:2.8, roomIdx:null},
+          {id:'it-gf-4', label:'BT&BP Lab\n7.20×10.10', x:.02, y:.35, w:.12, h:.28, type:'lab', kw:14.5, roomIdx:null},
+          {id:'it-gf-5', label:'MAC Lab\n7.20×10.10', x:.02, y:.55, w:.12, h:.28, type:'complab', kw:21.0, roomIdx:4},
+          {id:'it-gf-6', label:'Internet Centre\n7.20×10.10', x:.02, y:.75, w:.12, h:.18, type:'complab', kw:18.8, roomIdx:null},
+          {id:'it-gf-7', label:'Staff Rooms\n6.10×4.50', x:.25, y:.48, w:.12, h:.38, type:'office', kw:3.5, roomIdx:null},
+          {id:'it-gf-8', label:'PG Lab CSE-9\n6.10×4.50', x:.38, y:.65, w:.12, h:.22, type:'lab', kw:16.5, roomIdx:null},
+          {id:'it-gf-9', label:'Computer Lab\n8.80×7.10', x:.52, y:.65, w:.16, h:.22, type:'complab', kw:32.5, roomIdx:null},
+          {id:'it-gf-10', label:'Dean Office', x:.38, y:.8, w:.12, h:.12, type:'office', kw:2.8, roomIdx:null},
+        ]
+      },
+      {
+        name: '1st Floor',
+        rooms: [
+          {id:'it-1f-1', label:'Library\n17.10×12.20', x:.28, y:.05, w:.5, h:.38, type:'library', kw:18.5, roomIdx:null},
+          {id:'it-1f-2', label:'Library\n12.20×38.70', x:.80, y:.05, w:.18, h:.88, type:'library', kw:12.4, roomIdx:null},
+          {id:'it-1f-3', label:'Common Room', x:.02, y:.05, w:.12, h:.22, type:'util', kw:2.8, roomIdx:null},
+          {id:'it-1f-4', label:'CSE Lab', x:.02, y:.30, w:.12, h:.28, type:'lab', kw:21.5, roomIdx:null},
+          {id:'it-1f-5', label:'Class Room', x:.02, y:.60, w:.12, h:.22, type:'classroom', kw:8.2, roomIdx:null},
+          {id:'it-1f-6', label:'Class Room', x:.02, y:.76, w:.12, h:.18, type:'classroom', kw:8.2, roomIdx:null},
+          {id:'it-1f-7', label:'M.Tech Class×4\n6.10×4.50', x:.28, y:.48, w:.32, h:.38, type:'classroom', kw:14.5, roomIdx:null},
+          {id:'it-1f-8', label:'IT Seminar Hall\n20.50×9.10', x:.38, y:.75, w:.32, h:.18, type:'seminar', kw:18.0, roomIdx:5},
+        ]
+      },
+      {
+        name: '2nd Floor',
+        rooms: [
+          {id:'it-2f-1', label:'Library\n17.10×12.20', x:.28, y:.05, w:.5, h:.35, type:'library', kw:18.5, roomIdx:null},
+          {id:'it-2f-2', label:'Library\n12.20×38.70', x:.80, y:.05, w:.18, h:.88, type:'library', kw:12.4, roomIdx:null},
+          {id:'it-2f-3', label:'Common Room', x:.02, y:.05, w:.12, h:.22, type:'util', kw:2.8, roomIdx:null},
+          {id:'it-2f-4', label:'HOD + Staff', x:.28, y:.45, w:.24, h:.22, type:'office', kw:4.5, roomIdx:null},
+          {id:'it-2f-5', label:'Class Room×3', x:.02, y:.35, w:.12, h:.58, type:'classroom', kw:8.2, roomIdx:null},
+          {id:'it-2f-6', label:'Lab (IT)\n12.20×14.10', x:.80, y:.05, w:.18, h:.42, type:'lab', kw:24.5, roomIdx:null},
+          {id:'it-2f-7', label:'Lab (IT)×2\n12.20×12.20', x:.80, y:.5, w:.18, h:.42, type:'lab', kw:22.0, roomIdx:null},
+          {id:'it-2f-8', label:'Class Room×2', x:.38, y:.65, w:.22, h:.28, type:'classroom', kw:10.5, roomIdx:null},
+          {id:'it-2f-9', label:'Staff Rooms×4\n6.10×4.50', x:.28, y:.65, w:.08, h:.28, type:'office', kw:4.2, roomIdx:null},
+        ]
+      },
+      {
+        name: '3rd Floor',
+        rooms: [
+          {id:'it-3f-1', label:'Drawing Hall\n15.70×12.20', x:.28, y:.05, w:.5, h:.35, type:'lab', kw:16.5, roomIdx:null},
+          {id:'it-3f-2', label:'Seminar Hall\n12.20×30.50', x:.80, y:.05, w:.18, h:.88, type:'seminar', kw:14.5, roomIdx:null},
+          {id:'it-3f-3', label:'Common Room', x:.02, y:.05, w:.12, h:.22, type:'util', kw:2.8, roomIdx:null},
+          {id:'it-3f-4', label:'Class Room×3', x:.02, y:.28, w:.12, h:.65, type:'classroom', kw:10.5, roomIdx:null},
+          {id:'it-3f-5', label:'Staff Rooms×4\n6.10×4.50', x:.28, y:.45, w:.24, h:.22, type:'office', kw:4.2, roomIdx:null},
+          {id:'it-3f-6', label:'Placement Room\n20.50×9.10', x:.38, y:.75, w:.3, h:.18, type:'office', kw:6.5, roomIdx:null},
+          {id:'it-3f-7', label:'Placement\n12.20×8.10', x:.70, y:.75, w:.08, h:.18, type:'office', kw:3.5, roomIdx:null},
+        ]
+      },
+      {
+        name: '4th Floor',
+        rooms: [
+          {id:'it-4f-1', label:'Exam Hall\n15.70×12.20', x:.28, y:.05, w:.5, h:.35, type:'seminar', kw:14.5, roomIdx:null},
+          {id:'it-4f-2', label:'Seminar Hall\n12.20×38.70', x:.80, y:.05, w:.18, h:.88, type:'seminar', kw:16.5, roomIdx:null},
+          {id:'it-4f-3', label:'Common Room', x:.02, y:.05, w:.12, h:.22, type:'util', kw:2.8, roomIdx:null},
+          {id:'it-4f-4', label:'Class Room×3', x:.02, y:.28, w:.12, h:.65, type:'classroom', kw:10.5, roomIdx:null},
+          {id:'it-4f-5', label:'IT PG Lab\n6.10×9.10', x:.45, y:.55, w:.12, h:.3, type:'complab', kw:21.0, roomIdx:null},
+          {id:'it-4f-6', label:'E-Class Room\n20.50×9.10', x:.38, y:.78, w:.3, h:.16, type:'complab', kw:126.0, roomIdx:4},
+          {id:'it-4f-7', label:'Staff Rooms\n6.10×4.50', x:.28, y:.48, w:.16, h:.28, type:'office', kw:4.2, roomIdx:null},
+        ]
+      }
+    ]
+  },
+
+  ADMIN: {
+    name: 'Admin Block',
+    color: '#e67e22',
+    shape: 'L',
+    floors: [
+      {
+        name: 'Ground Floor',
+        rooms: [
+          {id:'adm-gf-1', label:'Dining Hall / Exam Hall\n12.19×22.80', x:.02, y:.05, w:.33, h:.55, type:'seminar', kw:22.5, roomIdx:null},
+          {id:'adm-gf-2', label:'T.P. Office\n12.19×7.39', x:.60, y:.05, w:.38, h:.42, type:'office', kw:8.5, roomIdx:null},
+          {id:'adm-gf-3', label:'Seminar Hall\n12.19×0.48', x:.60, y:.52, w:.38, h:.38, type:'seminar', kw:18.5, roomIdx:8},
+          {id:'adm-gf-4', label:'Exam Store\n12.19×7.40', x:.02, y:.63, w:.2, h:.28, type:'util', kw:3.2, roomIdx:null},
+          {id:'adm-gf-5', label:'Common Room', x:.02, y:.8, w:.2, h:.14, type:'util', kw:2.8, roomIdx:null},
+          {id:'adm-gf-6', label:'HOD Room', x:.38, y:.58, w:.13, h:.28, type:'office', kw:3.5, roomIdx:null},
+          {id:'adm-gf-7', label:'Comm Lab', x:.52, y:.58, w:.07, h:.28, type:'lab', kw:12.5, roomIdx:null},
+          {id:'adm-gf-8', label:'Staff Cabin', x:.52, y:.4, w:.07, h:.17, type:'office', kw:2.8, roomIdx:null},
+          {id:'adm-gf-9', label:'Skill Lab', x:.38, y:.88, w:.22, h:.08, type:'lab', kw:10.5, roomIdx:null},
+          {id:'adm-gf-10', label:'Staff Room', x:.38, y:.75, w:.13, h:.12, type:'office', kw:2.8, roomIdx:null},
+        ]
+      },
+      {
+        name: '1st Floor',
+        rooms: [
+          {id:'adm-1f-1', label:'Exam Centre①\n12.19×7.39', x:.02, y:.05, w:.22, h:.28, type:'seminar', kw:8.5, roomIdx:null},
+          {id:'adm-1f-2', label:'Exam Centre②\n12.19×7.39', x:.02, y:.35, w:.22, h:.28, type:'seminar', kw:8.5, roomIdx:null},
+          {id:'adm-1f-3', label:'Exam Centre③\n12.19×7.39', x:.02, y:.65, w:.22, h:.28, type:'seminar', kw:8.5, roomIdx:null},
+          {id:'adm-1f-4', label:'CSE Computer Lab①\n12.19×7.39', x:.60, y:.05, w:.38, h:.28, type:'complab', kw:39.6, roomIdx:11},
+          {id:'adm-1f-5', label:'LT Comp Lab①\n12.19×7.39', x:.60, y:.35, w:.38, h:.22, type:'complab', kw:32.5, roomIdx:null},
+          {id:'adm-1f-6', label:'LT Comp Lab②\n12.19×5.10', x:.60, y:.59, w:.38, h:.2, type:'complab', kw:28.5, roomIdx:null},
+          {id:'adm-1f-7', label:'CSE Comp Lab②\n12.19×7.39', x:.60, y:.8, w:.38, h:.18, type:'complab', kw:35.5, roomIdx:null},
+          {id:'adm-1f-8', label:'Conference Room\n12.19×7.39', x:.02, y:.72, w:.22, h:.22, type:'office', kw:5.5, roomIdx:null},
+          {id:'adm-1f-9', label:'Chairman/Sec\n12.19×7.39', x:.02, y:.78, w:.22, h:.18, type:'office', kw:4.5, roomIdx:null},
+          {id:'adm-1f-10', label:'Principal Room\n7.4×6.2', x:.38, y:.55, w:.12, h:.25, type:'office', kw:4.8, roomIdx:null},
+          {id:'adm-1f-11', label:'Accounts Room\n7.4×11.2', x:.50, y:.55, w:.1, h:.25, type:'office', kw:3.5, roomIdx:null},
+        ]
+      },
+      {
+        name: '2nd Floor',
+        rooms: [
+          {id:'adm-2f-1', label:'L.H-⑤\n12.19×7.39', x:.02, y:.05, w:.22, h:.28, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-2f-2', label:'L.H-⑦\n12.19×7.39', x:.02, y:.35, w:.22, h:.28, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-2f-3', label:'L.H-⑧\n12.19×7.39', x:.02, y:.55, w:.22, h:.28, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-2f-4', label:'Communication\nLab 12.19×7.39', x:.02, y:.78, w:.22, h:.18, type:'lab', kw:12.5, roomIdx:null},
+          {id:'adm-2f-5', label:'L.H-①\n12.19×7.39', x:.60, y:.05, w:.38, h:.28, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-2f-6', label:'L.H-②\n12.19×7.39', x:.60, y:.35, w:.38, h:.22, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-2f-7', label:'L.H-③\n12.19×7.39', x:.60, y:.59, w:.38, h:.22, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-2f-8', label:'L.H-④\n12.19×7.39', x:.60, y:.8, w:.38, h:.18, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-2f-9', label:'Elec Circuit Lab\n7.6×11.2', x:.38, y:.55, w:.12, h:.3, type:'lab', kw:18.5, roomIdx:null},
+          {id:'adm-2f-10', label:'Sim Lab\n7.6×11.2', x:.50, y:.55, w:.1, h:.3, type:'lab', kw:16.5, roomIdx:null},
+          {id:'adm-2f-11', label:'Adv Comm Lab\n12.19×7.39', x:.60, y:.55, w:.2, h:.22, type:'lab', kw:14.5, roomIdx:null},
+        ]
+      },
+      {
+        name: '3rd Floor',
+        rooms: [
+          {id:'adm-3f-1', label:'L.H-⑬\n12.19×7.39', x:.02, y:.05, w:.22, h:.28, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-3f-2', label:'L.H-⑫\n12.19×7.39', x:.02, y:.35, w:.22, h:.28, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-3f-3', label:'L.H-⑪\n12.19×7.39', x:.02, y:.55, w:.22, h:.28, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-3f-4', label:'L.H-⑩\n12.19×7.39', x:.02, y:.72, w:.22, h:.16, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-3f-5', label:'L.H-⑨\n12.19×7.39', x:.02, y:.82, w:.22, h:.14, type:'classroom', kw:8.5, roomIdx:null},
+          {id:'adm-3f-6', label:'Physics Lab\n12.19×15.10', x:.60, y:.05, w:.38, h:.32, type:'lab', kw:22.5, roomIdx:null},
+          {id:'adm-3f-7', label:'M.P.&M.C/E.C.A Lab\n12.19×7.40', x:.60, y:.40, w:.38, h:.22, type:'lab', kw:18.5, roomIdx:null},
+          {id:'adm-3f-8', label:'Chemistry Lab\n12.19×14.63', x:.60, y:.65, w:.38, h:.32, type:'lab', kw:20.5, roomIdx:null},
+          {id:'adm-3f-9', label:'ETE HOD+Staff\n7.6×11.2', x:.38, y:.55, w:.12, h:.3, type:'office', kw:3.5, roomIdx:null},
+          {id:'adm-3f-10', label:'Project Lab\n6.8×11.2', x:.50, y:.55, w:.1, h:.3, type:'lab', kw:12.5, roomIdx:null},
+        ]
+      },
+      {
+        name: '4th Floor',
+        rooms: [
+          {id:'adm-4f-1', label:'Class Room 1\n40\'×36\'', x:.02, y:.05, w:.22, h:.38, type:'classroom', kw:9.5, roomIdx:null},
+          {id:'adm-4f-2', label:'Class Room 2\n40\'×37\'', x:.02, y:.45, w:.22, h:.38, type:'classroom', kw:9.5, roomIdx:null},
+          {id:'adm-4f-3', label:'Staff Rooms', x:.02, y:.72, w:.22, h:.24, type:'office', kw:4.5, roomIdx:null},
+          {id:'adm-4f-4', label:'Director Room', x:.02, y:.8, w:.11, h:.16, type:'office', kw:3.5, roomIdx:null},
+          {id:'adm-4f-5', label:'Conference Room', x:.13, y:.8, w:.11, h:.16, type:'office', kw:4.5, roomIdx:null},
+          {id:'adm-4f-6', label:'Class Room\n40\'×24\'3"', x:.60, y:.05, w:.38, h:.28, type:'classroom', kw:9.5, roomIdx:null},
+          {id:'adm-4f-7', label:'Class Room\n40\'×24\'6"', x:.60, y:.35, w:.38, h:.25, type:'classroom', kw:9.5, roomIdx:null},
+          {id:'adm-4f-8', label:'Hall\n40\'9"×49\'3"', x:.60, y:.62, w:.38, h:.35, type:'seminar', kw:18.5, roomIdx:null},
+          {id:'adm-4f-9', label:'Library\n25\'×36\'9"', x:.30, y:.65, w:.2, h:.3, type:'library', kw:8.5, roomIdx:10},
+          {id:'adm-4f-10', label:'Lab\n48\'×36\'9"', x:.50, y:.65, w:.08, h:.3, type:'lab', kw:22.5, roomIdx:null},
+        ]
+      }
+    ]
+  }
+};
+
+// ═══════════════════════════════════
+// ROOMS for Occupancy tab
+// ═══════════════════════════════════
+const ROOMS=[
+  {name:'EEE Electro Machine Lab',  load:15.2, block:'EEE', floor:0, roomId:'eee-gf-1'},
+  {name:'EEE Micro Processor Lab',  load:8.4,  block:'EEE', floor:1, roomId:'eee-1f-1'},
+  {name:'CSE Computer Lab-I',       load:12.1, block:'CSE', floor:1, roomId:'cse-1f-1'},
+  {name:'CSE Computer Lab-III',     load:14.3, block:'CSE', floor:1, roomId:'cse-1f-3'},
+  {name:'IT MAC Lab / E-Class',     load:21.0, block:'IT',  floor:0, roomId:'it-gf-5'},
+  {name:'IT Seminar Hall',          load:5.5,  block:'IT',  floor:1, roomId:'it-1f-8'},
+  {name:'Admin Seminar Hall GF',    load:7.2,  block:'ADMIN', floor:0, roomId:'adm-gf-3'},
+  {name:'Admin Multimedia / Lab',   load:4.9,  block:'ADMIN', floor:1, roomId:'adm-1f-4'},
+  {name:'Admin Seminar Hall 2F',    load:7.2,  block:'ADMIN', floor:0, roomId:'adm-gf-3'},
+  {name:'Admin Comm Lab',           load:3.1,  block:'ADMIN', floor:2, roomId:'adm-2f-4'},
+  {name:'IT Library',               load:6.8,  block:'IT',  floor:0, roomId:'it-gf-1'},
+  {name:'Admin CSE Comp Lab①',      load:9.6,  block:'ADMIN', floor:1, roomId:'adm-1f-4'},
+];
+let occState=new Array(ROOMS.length).fill(true);
+let occHistory=[], liveLoadBase=116, liveLoadCurrent=116;
+
+// ═══════════════════════════════════
+// BLUEPRINT RENDERING ENGINE
+// ═══════════════════════════════════
+let currentBlock='EEE', currentFloor=0, heatOn=false;
+
+const TYPE_COLORS = {
+  lab:       {fill:'rgba(26,122,60,.10)', stroke:'#00c9a7', label:'Lab'},
+  complab:   {fill:'#bbdefb', stroke:'#2980b9', label:'Computer Lab'},
+  classroom: {fill:'#fff9c4', stroke:'#f39c12', label:'Classroom'},
+  seminar:   {fill:'#e1bee7', stroke:'#8e44ad', label:'Seminar Hall'},
+  library:   {fill:'#ffe0b2', stroke:'#e67e22', label:'Library'},
+  office:    {fill:'#f5f5f5', stroke:'#666',    label:'Office/HOD'},
+  util:      {fill:'#e0e0e0', stroke:'#999',    label:'Utility'},
+  corridor:  {fill:'#f5f5f5', stroke:'#ccc',    label:'Corridor'},
+};
+
+const HEAT_COLORS = [
+  {max:30,  color:'rgba(46,204,113,0.55)'},  // <30 kWh/day = low
+  {max:80,  color:'rgba(241,196,15,0.55)'},  // 30-80 kWh = medium
+  {max:200, color:'rgba(230,126,18,0.55)'},  // 80-200 kWh = high
+  {max:9999,color:'rgba(192,57,43,0.65)'},   // >200 kWh = very high
+];
+
+function getHeatColor(kw){ for(const h of HEAT_COLORS){if(kw<=h.max)return h.color;} return HEAT_COLORS[HEAT_COLORS.length-1].color; }
+
+function switchBlock(){
+  currentBlock=document.getElementById('bp-block').value;
+  currentFloor=0;
+  heatOn=false;
+
+  // ECE block — no floor plan drawing obtained
+  if(currentBlock==='ECE'){
+    document.getElementById('floor-tabs').innerHTML='';
+    document.getElementById('bp-block-label').textContent='ECE Block';
+    document.getElementById('hotspot-list').innerHTML='<span style="color:var(--muted);">Floor plan not available for ECE block.</span>';
+    document.getElementById('bp-recs').innerHTML=`
+      <div style="padding:.6rem .8rem;background:var(--ap);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;margin-bottom:.6rem;font-size:.78rem;">
+        ⚠️ <strong>Structural drawing not obtained for ECE Block.</strong> Floor plan cannot be rendered.
+      </div>
+      <div style="font-size:.78rem;line-height:2.0;">
+        <strong>ECE Block — Audit Summary (without floor plan):</strong><br>
+        · Monthly energy cost: <strong>₹1,04,560</strong> — highest among all 5 blocks<br>
+        · Likely loads: Electronics labs, Communication labs, Signal processing labs, DSP labs, classrooms<br>
+        · Recommended action: Obtain structural drawing from civil dept → map load zones → apply heat map<br>
+        · Priority: 🔴 High — highest block cost on campus, floor plan audit pending
+      </div>`;
+    // Draw placeholder on canvas
+    const canvas=document.getElementById('bp-canvas');
+    const ctx=canvas.getContext('2d');
+    canvas.width=canvas.offsetWidth||800;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#f7faf7';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle='#d4e4d4';
+    ctx.setLineDash([8,6]);
+    ctx.strokeRect(20,20,canvas.width-40,canvas.height-40);
+    ctx.setLineDash([]);
+    ctx.fillStyle='#7aa89e';
+    ctx.font='bold 16px Rajdhani, sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('ECE Block — Floor Plan Not Available',canvas.width/2,canvas.height/2-24);
+    ctx.font='13px Space Mono, monospace';
+    ctx.fillText('Structural drawing not obtained · Audit data recorded separately',canvas.width/2,canvas.height/2+8);
+    ctx.fillStyle='#e67e22';
+    ctx.font='bold 13px Space Mono, monospace';
+    ctx.fillText('Monthly Cost: ₹1,04,560 · Highest on campus',canvas.width/2,canvas.height/2+36);
+    return;
+  }
+
+  buildFloorTabs();
+  drawFloorPlan();
+  document.getElementById('bp-block-label').textContent=BLOCKS[currentBlock].name;
+  document.getElementById('hotspot-list').textContent='Apply heat map to detect zones.';
+  document.getElementById('bp-recs').textContent='Select a block and apply heat map.';
+}
+
+function buildFloorTabs(){
+  const block=BLOCKS[currentBlock];
+  const tabs=document.getElementById('floor-tabs');
+  tabs.innerHTML='';
+  block.floors.forEach((f,i)=>{
+    const btn=document.createElement('button');
+    btn.className='floor-tab'+(i===currentFloor?' active':'');
+    btn.textContent=f.name;
+    btn.onclick=()=>{ currentFloor=i; buildFloorTabs(); drawFloorPlan(); };
+    tabs.appendChild(btn);
+  });
+}
+
+// Override tooltip cost to use timetable hours if available
+function ttGetHours(room) {
+  return (room.dailyHours && room.ttLinked) ? room.dailyHours : 8;
+}
+
+function drawFloorPlan(){
+  const canvas=document.getElementById('bp-canvas');
+  const wrap=document.getElementById('bp-outer')||canvas.parentElement;
+  canvas.width=canvas.parentElement.clientWidth||880;
+  canvas.height=460;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const W=canvas.width, H=canvas.height;
+  const pad=18;
+  const drawW=W-pad*2, drawH=H-pad*2;
+
+  const block=BLOCKS[currentBlock];
+  const floor=block.floors[currentFloor];
+
+  // Background
+  ctx.fillStyle='#e8f0e8';
+  ctx.fillRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='#c8d8c8'; ctx.lineWidth=0.5;
+  for(let x=0;x<W;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  // Title bar
+  ctx.fillStyle=block.color+'22';
+  ctx.fillRect(0,0,W,36);
+  ctx.fillStyle=block.color;
+  ctx.font='bold 13px Rajdhani,sans-serif';
+  ctx.fillText(`${block.name} — ${floor.name}`,pad,24);
+  ctx.font='11px Space Mono,monospace';
+  ctx.fillStyle='#555';
+  ctx.fillText('G. Narayanamma Institute of Technology & Science',W-360,24);
+
+  // Draw rooms
+  floor.rooms.forEach(room=>{
+    const rx=pad+room.x*drawW, ry=36+pad+(room.y*(drawH-36));
+    const rw=room.w*drawW, rh=room.h*(drawH-36);
+
+    const tc=TYPE_COLORS[room.type]||TYPE_COLORS.util;
+
+    // Check if this room is linked to an occupancy room that is OFF
+    let isOff=false;
+    if(room.roomIdx!==null&&room.roomIdx!==undefined){
+      isOff=!occState[room.roomIdx];
+    }
+
+    // Base fill
+    ctx.fillStyle=isOff?'rgba(26,122,60,.07)':tc.fill;
+    ctx.fillRect(rx,ry,rw,rh);
+
+    // Heat overlay
+    if(heatOn&&!isOff){
+      const heatCol=getHeatColor(room.kw * ttGetHours(room)); // energy-based heat
+      ctx.fillStyle=heatCol;
+      ctx.fillRect(rx,ry,rw,rh);
+    } else if(isOff&&heatOn){
+      ctx.fillStyle='rgba(46,204,113,0.3)';
+      ctx.fillRect(rx,ry,rw,rh);
+    }
+
+    // Border
+    ctx.strokeStyle=isOff?'#00c9a7':tc.stroke;
+    ctx.lineWidth=isOff?2.5:1.5;
+    ctx.strokeRect(rx,ry,rw,rh);
+
+    // Label text
+    ctx.fillStyle=isOff?'#00957a':'#ffffff';
+    ctx.font=rw>80?'bold 9px Space Mono,monospace':'8px Space Mono,monospace';
+    const lines=room.label.split('\n');
+    const lineH=10;
+    const startY=ry+(rh-lines.length*lineH)/2+lineH;
+    lines.forEach((line,li)=>{
+      const tw=ctx.measureText(line).width;
+      if(tw<rw-4){
+        ctx.fillText(line,rx+(rw-tw)/2,startY+li*lineH);
+      } else {
+        ctx.fillText(line.slice(0,Math.floor((rw-8)/6)),rx+4,startY+li*lineH);
+      }
+    });
+
+    // kW badge if heat on
+    if(heatOn&&rw>55&&rh>28){
+      const hrs=ttGetHours(room); const badgeTxt=`${room.kw}kW·${hrs.toFixed(0)}h`;
+      ctx.font='bold 8px Space Mono,monospace';
+      const bw=ctx.measureText(badgeTxt).width+6;
+      ctx.fillStyle=isOff?'rgba(46,204,113,0.9)':'rgba(0,0,0,0.65)';
+      ctx.beginPath();
+      ctx.roundRect(rx+(rw-bw)/2,ry+rh-14,bw,12,3);
+      ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.fillText(badgeTxt,rx+(rw-bw)/2+3,ry+rh-5);
+    }
+
+    // OFF badge
+    if(isOff){
+      ctx.font='bold 9px Rajdhani,sans-serif';
+      ctx.fillStyle='rgba(26,122,60,0.9)';
+      ctx.fillText('💡 OFF',rx+4,ry+12);
+    }
+  });
+
+  // Legend
+  const legendItems=Object.entries(TYPE_COLORS).filter(([k])=>k!=='corridor'&&k!=='util');
+  let lx=pad, ly=H-14;
+  ctx.font='8px Space Mono,monospace';
+  legendItems.forEach(([k,v])=>{
+    ctx.fillStyle=v.fill; ctx.strokeStyle=v.stroke; ctx.lineWidth=1;
+    ctx.fillRect(lx,ly-8,10,9); ctx.strokeRect(lx,ly-8,10,9);
+    ctx.fillStyle='#444'; ctx.fillText(v.label,lx+12,ly);
+    lx+=ctx.measureText(v.label).width+22;
+    if(lx>W-80){lx=pad;ly-=12;}
+  });
+
+  // Click handler
+  canvas.onclick=(e)=>{
+    const rect=canvas.getBoundingClientRect();
+    const mx=(e.clientX-rect.left)*(W/rect.width);
+    const my=(e.clientY-rect.top)*(H/rect.height);
+    const floorRooms=BLOCKS[currentBlock].floors[currentFloor].rooms;
+    const tooltip=document.getElementById('room-tooltip');
+    let found=null;
+    floorRooms.forEach(room=>{
+      const rx=pad+room.x*drawW, ry=36+pad+(room.y*(drawH-36));
+      const rw=room.w*drawW, rh=room.h*(drawH-36);
+      if(mx>=rx&&mx<=rx+rw&&my>=ry&&my<=ry+rh) found=room;
+    });
+    if(found){
+      const isOff=found.roomIdx!==null&&found.roomIdx!==undefined&&!occState[found.roomIdx];
+      tooltip.style.display='block';
+      tooltip.style.left=(e.clientX-canvas.getBoundingClientRect().left+10)+'px';
+      tooltip.style.top=(e.clientY-canvas.getBoundingClientRect().top-30)+'px';
+      tooltip.innerHTML=`<strong>${found.label.replace('\n',' ')}</strong><br>
+        Type: ${TYPE_COLORS[found.type]?.label||found.type} | Load: ${found.kw} kW<br>
+        Status: ${isOff?'💡 OFF (energy saved)':'🔴 ACTIVE'}<br>
+        Occupied: ${ttGetHours(found).toFixed(1)}h/day ${found.ttLinked?'<b style=color:#1a7a3c>★ from timetable</b>':''}<br>Est. monthly cost: ₹${(found.kw*ttGetHours(found)*26*2).toFixed(0)}`;
+      setTimeout(()=>tooltip.style.display='none',3500);
+    }
+  };
+}
+
+function applyHeat(){
+  heatOn=true;
+  drawFloorPlan();
+  showHotspotList();
+  showRecs();
+  showToast('🔥 Heat map applied — red = highest energy zones');
+}
+
+function clearHeat(){
+  heatOn=false;
+  drawFloorPlan();
+  document.getElementById('hotspot-list').textContent='Apply heat map to detect zones.';
+  document.getElementById('bp-recs').textContent='Select a block and apply heat map.';
+}
+
+function showHotspotList(){
+  const block=BLOCKS[currentBlock];
+  let allRooms=[];
+  block.floors.forEach((f,fi)=>{f.rooms.forEach(r=>{allRooms.push({...r,floorName:f.name,floorIdx:fi});});});
+  allRooms=allRooms.filter(r=>r.type!=='corridor'&&r.type!=='util').sort((a,b)=>b.kw-a.kw).slice(0,8);
+  document.getElementById('hotspot-list').innerHTML=allRooms.map((h,i)=>{
+    const isOff=h.roomIdx!==null&&h.roomIdx!==undefined&&!occState[h.roomIdx];
+    const icons=['🔴','🔴','🟠','🟠','🟡','🟡','🟢','🟢'];
+    return `<div style="display:flex;align-items:center;gap:.65rem;padding:.42rem 0;border-bottom:1px solid var(--border);">
+      <span>${isOff?'🟢':icons[i]}</span>
+      <div>
+        <div style="font-weight:600;color:var(--text)">${h.label.replace('\n',' ')} <span style="color:var(--muted);font-size:.68rem;">(${h.floorName})</span>${isOff?'<span style="color:var(--green);font-size:.7rem;"> — Room OFF ✓</span>':''}</div>
+        <div style="font-size:.68rem;color:var(--muted)">Type: ${TYPE_COLORS[h.type]?.label} · Load: ${h.kw} kW · ${ttGetHours(h).toFixed(1)}h/day${h.ttLinked?' ★':''}· Est. ₹${(h.kw*ttGetHours(h)*2*26).toFixed(0)}/month</div>
+      </div>
+      <div style="margin-left:auto;font-family:var(--font-display);font-weight:800;font-size:.9rem;color:${isOff?'var(--green)':'var(--red)'};">${h.kw} kW</div>
+    </div>`;
+  }).join('');
+}
+
+const RECS={
+  EEE:'🔴 <strong>Electro Machine Lab (GF)</strong> — Largest EEE consumer at 45.2 kW. Install VFDs (Variable Frequency Drives) on all motors. Est. 15–20% saving.<br>🔴 <strong>Micro Processor Lab (1F)</strong> — 28.4 kW. Enable PC power management. Shutdown systems between sessions.<br>🟠 <strong>Electrical + Power Electronics Labs (2F)</strong> — Install instrument checkout system; power down between sessions saves ~30%.<br>🟡 <strong>Simulation Lab (3F)</strong> — Consolidate simulation stations. Shared high-performance workstations reduce load.<br>🟢 <strong>Seminar Hall (3F)</strong> — Install occupancy sensor + programmable thermostat for AC. Auto-off 10 min before session ends.',
+  CSE:'🔴 <strong>Computer Lab-III (1F, 48\'×27\'6")</strong> — Highest CSE consumer at 50.7 kW. Stagger lab schedules. Enable PC sleep mode saves 20%.<br>🔴 <strong>Computer Lab-I (1F, 36\'×27\'6")</strong> — 46.8 kW. UPS auto-shutdown between sessions. Replace CRT monitors if any.<br>🔴 <strong>Computer Lab-10 (3F)</strong> — 42.0 kW. Implement slot-based scheduling with mandatory 15-min power-off between batches.<br>🟠 <strong>Computer Lab-IV (1F)</strong> — 38.1 kW. Power management software to auto-shutdown idle PCs after 10 minutes.<br>🟢 <strong>Lecture Halls LH-I to LH-X</strong> — LED retrofit + daylight sensors. 40W tube → 18W LED saves ₹8,000+/month across block.',
+  IT:'🔴 <strong>E-Class Room 4F (20.50×9.10m)</strong> — Highest campus load 126 kW. Virtualise workstations / use thin clients. Saves up to ₹25,000/month.<br>🔴 <strong>Computer Lab GF (8.80×7.10m)</strong> — 32.5 kW. 3-hour slot scheduling. Auto-shutdown between sessions.<br>🔴 <strong>MAC Lab GF</strong> — 21 kW. Enable macOS energy saving mode. Turn off external displays when not in use.<br>🟠 <strong>IT Seminar Hall (1F)</strong> — 18 kW. Occupancy sensor + programmable AC thermostat saves 25%.<br>🟡 <strong>Libraries (all floors)</strong> — Replace all 40W fluorescent tubes with 18W LEDs. Install daylight sensors on library reading area.',
+  ADMIN:'🔴 <strong>CSE Computer Lab① (1F)</strong> — 39.6 kW. Largest Admin Block load. Slot-based scheduling + auto power-off.<br>🔴 <strong>Seminar Hall (GF, 12.19×0.48m)</strong> — 18.5 kW. Occupancy sensor prevents empty-hall operation. Pre-booking system. Est. save ₹11,357/month.<br>🟠 <strong>Physics Lab (3F)</strong> — 22.5 kW. Instrument auto-shutdown. Annual calibration to identify faulty high-drain equipment.<br>🟠 <strong>Chemistry Lab (3F)</strong> — 20.5 kW. Fume hood controls reduce HVAC load. Timer controls on exhaust systems.<br>🟡 <strong>Lecture Halls LH-①to⑬ (2F&3F)</strong> — 8.5 kW each, 13 halls = 110.5 kW total. LED + occupancy sensors reduce this by 35%.'
+};
+function showRecs(){ document.getElementById('bp-recs').innerHTML=RECS[currentBlock]||'No data.'; }
+
+// ═══════════════════════════════════
+// NAV
+// ═══════════════════════════════════
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='blueprint') setTimeout(()=>{switchBlock();},50);
+  if(id==='demand')    setTimeout(()=>{initDemandTab();},50);
+  if(id==='solar')     setTimeout(()=>{initSolarTab();},50);
+  // When leaving solar, destroy chart refs so canvas is clean on re-entry
+  if(id!=='solar'){
+    if(solarGaugeChart){ solarGaugeChart.destroy(); solarGaugeChart=null; }
+    if(duckCurveChart){  duckCurveChart.destroy();  duckCurveChart=null;  }
+    if(gridOffsetChart){ gridOffsetChart.destroy();  gridOffsetChart=null; }
+    if(solarInterval){   clearInterval(solarInterval); solarInterval=null; }
+  }
+}
+
+// ═══════════════════════════════════
+// SOLAR RENEWABLES HUB
+// ═══════════════════════════════════
+
+const SOLAR = {
+  ratedKw: 181,
+  battCapKwh: 90,
+  invMaxTemp: 55,
+  dustThresh: 0.65,
+  lat: 17.4
+};
+
+// Block ratings kWp
+const BLOCK_KWP = { Admin:60, IT:50, ECE:40, CSE:30, EEE:1 };
+
+// ── WEATHER SCENARIOS ────────────────────────────────────────────────────────
+// Each scenario defines an irradiance multiplier, effective output, grid state,
+// battery mode, and messaging for every dynamic section of the Solar tab.
+const WEATHER_SCENARIOS = {
+  clear: {
+    label: 'Clear Sky', icon: '☀️',
+    irr: 1.00,          // fraction of rated irradiance
+    effKwp: 181,        // effective kWp across campus
+    blockEff: { Admin:60, IT:50, ECE:40, CSE:30, EEE:1 },
+    peakGen: 158.3,     // kW at solar noon (181×0.875)
+    dailyGen: 796,
+    export: 486,
+    gridDraw: 0,
+    battMode: 'charging',
+    gridRisk: false,
+    penaltyRisk: false,
+    scheduleMode: 'solar',
+    duckSubtitle: 'Clear sky — 181 kWp generates 796 kWh/day. Campus uses 310 kWh; surplus 486 kWh exported to TSSPDCL grid. Morning startup is the only grid window.',
+    scheduleSubtitle: 'Campus is a net exporter. Run all heavy loads 11AM–3PM to maximise self-consumption before exporting surplus.',
+    bannerHtml: null
+  },
+  partly: {
+    label: 'Partly Cloudy', icon: '🌤️',
+    irr: 0.60,
+    effKwp: 109,
+    blockEff: { Admin:36, IT:30, ECE:24, CSE:18, EEE:0.6 },
+    peakGen: 95,
+    dailyGen: 478,
+    export: 168,
+    gridDraw: 0,
+    battMode: 'charging',
+    gridRisk: false,
+    penaltyRisk: false,
+    scheduleMode: 'solar',
+    duckSubtitle: 'Partly cloudy — effective output 109 kWp (60% of rated). Campus still fully offset; 168 kWh exported. Admin and IT arrays slightly reduced.',
+    scheduleSubtitle: 'Solar still covers campus load. Keep heavy loads in the 11AM–3PM window; avoid evening peaks.',
+    bannerHtml: null
+  },
+  overcast: {
+    label: 'Overcast', icon: '⛅',
+    irr: 0.22,
+    effKwp: 40,
+    blockEff: { Admin:13, IT:11, ECE:9, CSE:7, EEE:0.2 },
+    peakGen: 35,
+    dailyGen: 175,
+    export: 0,
+    gridDraw: 135,
+    battMode: 'discharging',
+    gridRisk: true,
+    penaltyRisk: false,
+    scheduleMode: 'grid',
+    duckSubtitle: '⚠ Overcast — effective 40 kWp (22% rated). Solar covers only ~56% of campus load. Grid supplements 135 kWh. Admin (60kWp→13kWp) and IT (50kWp→11kWp) can no longer shave peak demand.',
+    scheduleSubtitle: '⚠ Low irradiance detected — heavy loads moved out of peak window to prevent grid penalty. EEE Machine Lab deferred; only essential loads scheduled.',
+    bannerHtml: '<strong style="color:var(--amber);">⚠ Low Irradiance Detected — Smart Schedule Adjusted</strong><br>Effective solar output has dropped to ~40 kWp (22% of rated 181 kWp). Admin and IT block arrays can no longer shave the morning demand peak. Campus is now drawing 135 kWh from the TSSPDCL grid. Battery bank is <strong>discharging</strong> to support IT Servers and critical loads. Heavy lab equipment (EEE Machine Lab, Workshop) has been deferred to avoid nearing the 250 kVA sanctioned limit.'
+  },
+  storm: {
+    label: 'Thunderstorm', icon: '⛈️',
+    irr: 0.04,
+    effKwp: 7,
+    blockEff: { Admin:2.3, IT:1.9, ECE:1.5, CSE:1.1, EEE:0.04 },
+    peakGen: 6,
+    dailyGen: 28,
+    export: 0,
+    gridDraw: 282,
+    battMode: 'discharging-critical',
+    gridRisk: true,
+    penaltyRisk: true,
+    scheduleMode: 'emergency',
+    duckSubtitle: '🚨 Thunderstorm — effective 7 kWp (4% rated). Solar negligible. Campus drawing 282 kWh from grid. Peak demand risk: campus load may approach 250 kVA sanctioned limit. Implement load shedding immediately.',
+    scheduleSubtitle: '🚨 Emergency Mode — all non-essential loads shed. EEE labs, workshops and computer labs deferred. Only IT Servers, Admin, and safety systems running. Manual load staggering required.',
+    bannerHtml: '<strong style="color:var(--red);">🚨 Thunderstorm — Emergency Grid Mode Active</strong><br>Solar generation is negligible (4 kWp effective). Campus is fully dependent on the TSSPDCL grid. Battery bank is in <strong>critical discharge</strong> — powering IT Servers and UPS only. Risk of exceeding 250 kVA sanctioned load is HIGH. All non-essential loads have been shed automatically. Manual verification of load staggering recommended immediately. Expected grid demand charge this month: <strong>₹2,00,000+</strong>.'
+  }
+};
+
+let currentWeather = 'clear';
+let solarGaugeChart=null, duckCurveChart=null, gridOffsetChart=null;
+let solarInterval=null;
+let solarState = { soc:72, genToday:0, campusLoad:142 };
+
+function setWeather(mode, btn) {
+  currentWeather = mode;
+  document.querySelectorAll('.weather-btn').forEach(b=>{
+    b.classList.remove('active','clear','partly','overcast','storm');
+  });
+  btn.classList.add('active', mode);
+
+  const sc = WEATHER_SCENARIOS[mode];
+
+  // Banner
+  const banner = document.getElementById('scenario-banner');
+  if (sc.bannerHtml) {
+    banner.style.display = 'block';
+    banner.style.background = mode==='storm' ? 'rgba(220,38,38,.06)' : 'rgba(217,119,6,.07)';
+    banner.style.borderLeft = `4px solid ${mode==='storm'?'var(--red)':'var(--amber)'}`;
+    banner.style.borderRadius = '0 8px 8px 0';
+    banner.innerHTML = sc.bannerHtml;
+  } else {
+    banner.style.display = 'none';
+    banner.innerHTML = '';
+  }
+
+  // Update subtitles
+  const duckSub = document.getElementById('duck-subtitle');
+  if (duckSub) duckSub.textContent = sc.duckSubtitle;
+  const schSub = document.getElementById('schedule-subtitle');
+  if (schSub) schSub.textContent = sc.scheduleSubtitle;
+
+  // Block output panel
+  buildBlockOutput(sc);
+
+  // Rebuild charts and schedule
+  buildDuckCurve();
+  buildGridOffset();
+  buildSmartSchedule();
+  updateGaugeForScenario(sc);
+}
+
+// ── BLOCK OUTPUT PANEL ────────────────
+function buildBlockOutput(sc) {
+  const el  = document.getElementById('block-output-grid');
+  const lbl = document.getElementById('block-output-label');
+  if (!el) return;
+
+  if (lbl) lbl.textContent = `${sc.icon} ${sc.label} · ${Math.round(sc.irr*100)}% irradiance · ${sc.effKwp} kWp effective`;
+
+  const RATED = { Admin:60, IT:50, ECE:40, CSE:30, EEE:1 };
+  const COLORS = { Admin:'var(--green)', IT:'var(--blue)', ECE:'var(--amber)', CSE:'var(--purple)', EEE:'var(--red)' };
+  const DAILY  = { Admin:264, IT:220, ECE:176, CSE:132, EEE:4.4 };
+
+  el.innerHTML = Object.entries(RATED).map(([block, rated]) => {
+    const eff   = sc.blockEff[block];
+    const pct   = Math.round((eff / rated) * 100);
+    const daily = +(DAILY[block] * sc.irr).toFixed(1);
+    const col   = COLORS[block];
+    const canShave = eff >= 30; // can contribute meaningful peak shaving
+    const statusTxt = sc.gridRisk
+      ? (eff < 15 ? '⚠ Negligible' : '⚠ Reduced')
+      : (pct >= 90 ? '✅ Full output' : '✅ Good');
+    const statusCol = sc.gridRisk && eff < 15 ? 'var(--red)' : sc.gridRisk ? 'var(--amber)' : 'var(--green)';
+
+    return `<div style="border:1px solid var(--border);border-radius:9px;padding:.7rem .75rem;
+      background:${sc.gridRisk && eff < 15 ? 'rgba(220,38,38,.03)' : '#fff'};
+      border-color:${sc.gridRisk && eff < 15 ? 'rgba(220,38,38,.2)' : 'var(--border)'};">
+      <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">${block}</div>
+      <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;color:${col};line-height:1.1;margin:.2rem 0;">
+        ${eff} <span style="font-size:.7rem;font-weight:500;">kWp</span>
+      </div>
+      <div style="font-size:.6rem;color:var(--muted);margin-bottom:.35rem;">
+        of ${rated} kWp rated
+      </div>
+      <!-- Progress bar -->
+      <div style="height:4px;background:#e2e8f0;border-radius:2px;margin-bottom:.35rem;">
+        <div style="height:100%;border-radius:2px;background:${col};width:${pct}%;transition:width .5s ease;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:.62rem;font-weight:600;color:${statusCol};">${statusTxt}</div>
+        <div style="font-size:.62rem;color:var(--muted);">~${daily} kWh/d</div>
+      </div>
+      ${!canShave && sc.gridRisk ? '<div style="font-size:.6rem;color:var(--red);margin-top:.25rem;">Cannot shave peak</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function initSolarTab() {
+  const firstBtn = document.querySelector('.weather-btn.active');
+  if (firstBtn && !firstBtn.classList.contains('clear') &&
+      !firstBtn.classList.contains('partly') &&
+      !firstBtn.classList.contains('overcast') &&
+      !firstBtn.classList.contains('storm')) {
+    firstBtn.classList.add('clear');
+  }
+  buildBlockOutput(WEATHER_SCENARIOS[currentWeather]);
+  buildDuckCurve();
+  buildGridOffset();
+  buildSunCast();
+  buildSmartSchedule();
+  updateSolarLive(); // always run immediately so values show at once
+  if (solarInterval) clearInterval(solarInterval);
+  solarInterval = setInterval(updateSolarLive, 3000);
+}
+
+// ── LIVE SIMULATION ──────────────────
+function solarWattBase(hour) {
+  if (hour < 6 || hour > 18.5) return 0;
+  const peak = SOLAR.ratedKw * 1000 * 0.875; // watts
+  const t = (hour - 12.5) / 3.5;
+  return Math.max(0, peak * Math.exp(-t * t));
+}
+
+// Returns a plausible watt value — uses real hour if daylight,
+// otherwise simulates noon (so the dashboard always shows live-looking numbers)
+function effectiveWatt(sc) {
+  const now  = new Date();
+  const hour = now.getHours() + now.getMinutes() / 60;
+  const isDaylight = hour >= 6 && hour <= 18.5;
+  // At night use simulated "noon equivalent / 8" so demo values are visible
+  const simHour = isDaylight ? hour : 12.5;
+  const base = solarWattBase(simHour) * sc.irr;
+  const noise = 1 + (Math.random() - 0.5) * 0.06;
+  return { watt: Math.round(base * noise), simulated: !isDaylight };
+}
+
+function updateSolarLive() {
+  const sc = WEATHER_SCENARIOS[currentWeather];
+  const { watt, simulated } = effectiveWatt(sc);
+
+  // PZEM-017 readings — string voltage (36–38 V DC per string, 5 strings in series = ~180 V)
+  const volt = watt > 100 ? +(170 + Math.random() * 10).toFixed(1) : +(12 + Math.random()).toFixed(1);
+  const amp  = volt > 0   ? +(watt / volt / 0.97).toFixed(2) : 0;
+
+  // Efficiency = actual W / rated W  (as %)
+  const eff  = +(Math.min(100, (watt / (SOLAR.ratedKw * 1000)) * 100)).toFixed(1);
+  // Inverter temp — scales with load
+  const invT = Math.round(32 + (watt / (SOLAR.ratedKw * 1000)) * 28 + Math.random() * 3);
+
+  // Battery state
+  const battDelta = sc.battMode === 'charging' ? 0.06
+                  : sc.battMode === 'discharging' ? -0.10
+                  : -0.22; // discharging-critical
+  solarState.soc = Math.min(100, Math.max(2,
+    solarState.soc + battDelta + (Math.random() - 0.5) * 0.03));
+  const socPct = +solarState.soc.toFixed(1);
+
+  // Battery bank: 90 kWh, ~48V nominal
+  const batV   = +(46 + (socPct / 100) * 6).toFixed(1);   // 46–52 V range
+  const batKwh = +((socPct / 100) * SOLAR.battCapKwh).toFixed(1);
+  // Charge current (positive) or discharge (negative)
+  const batA = sc.battMode === 'charging'
+    ? +(watt / 1000 / batV * 0.9).toFixed(1)             // solar charging amps
+    : -(solarState.campusLoad * 1000 / batV * 0.08).toFixed(1); // discharge amps
+
+  // Accumulate generation (3s interval → /1200 to get kWh)
+  solarState.genToday = +(solarState.genToday + watt / 1000 / 1200).toFixed(3);
+
+  // Solar contribution to campus load — both in kW
+  const solarKw  = watt / 1000;
+  const loadKw   = solarState.campusLoad; // 142 kW
+  const contribution = Math.min(100, Math.round((solarKw / loadKw) * 100));
+
+  const co2   = +(solarState.genToday * 0.82).toFixed(2);
+  const trees = Math.max(0, +(co2 / 21.7).toFixed(1));
+
+  // Time to full
+  const remainKwh = SOLAR.battCapKwh * (1 - socPct / 100);
+  const chargeKw  = Math.max(0, solarKw - loadKw);
+  const ttfH = chargeKw > 0 ? remainKwh / chargeKw : 999;
+  const ttfStr = ttfH < 48 ? `${Math.floor(ttfH)}h ${Math.round((ttfH % 1) * 60)}m` : 'Full / N/A';
+
+  const exportKwh = Math.max(0, solarState.genToday - loadKw * 0.003).toFixed(2);
+
+  // ── Update all display elements ──
+  const simNote = simulated ? ' <span style="font-size:.55rem;color:var(--muted);">(sim)</span>' : '';
+  setText('sol-voltage',    `${volt} <span style="font-size:.7rem;font-weight:400;">V</span>${simNote}`);
+  setText('sol-current',    `${amp} <span style="font-size:.7rem;font-weight:400;">A</span>${simNote}`);
+  setText('sol-efficiency', `${eff} <span style="font-size:.7rem;font-weight:400;">%</span>`);
+  setText('sol-inv-temp',   `${invT} <span style="font-size:.7rem;font-weight:400;">°C</span>`);
+  setText('sol-soc',        `${Math.round(socPct)} <span style="font-size:.7rem;font-weight:400;">%</span>`);
+  setText('sol-ttf',        ttfStr);
+  setText('sol-co2',        `${co2} <span style="font-size:.7rem;font-weight:400;">kg</span>`);
+  setText('sol-trees',      `${trees} <span style="font-size:.7rem;font-weight:400;">trees</span>`);
+  setText('solar-pct-val',  contribution + '%');
+  setText('solar-watt-val', `${(solarKw).toFixed(2)} kW`);
+
+  // Gauge colour: green >50%, amber >20%, red otherwise
+  updateGaugeForScenario(sc, contribution);
+
+  // Battery bar
+  const socInt = Math.round(socPct);
+  setText('bat-soc-lbl', socInt + '%');
+  const bar = document.getElementById('bat-soc-bar');
+  if (bar) {
+    bar.style.width = socInt + '%';
+    bar.style.background = socInt > 60 ? 'var(--green)' : socInt > 30 ? 'var(--amber)' : 'var(--red)';
+  }
+  setText('bat-v',   `${batV} <span style="font-size:.6rem;font-weight:400;">V</span>`);
+  setText('bat-a',   `${Math.abs(batA)} <span style="font-size:.6rem;font-weight:400;">A ${batA>=0?'↑ chg':'↓ dis'}</span>`);
+  setText('bat-kwh', `${batKwh} <span style="font-size:.6rem;font-weight:400;">kWh</span>`);
+  setText('sol-gen-today',    `${solarState.genToday.toFixed(2)} <span style="font-size:.65rem;font-weight:400;">kWh</span>`);
+  setText('sol-export-today', `${exportKwh} <span style="font-size:.65rem;font-weight:400;">kWh</span>`);
+
+  buildHealthAlerts(eff, invT, watt, new Date().getHours() + new Date().getMinutes()/60, sc);
+  buildPanelHealth(+eff, invT, socInt, sc);
+}
+
+function setText(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+// ── GAUGE ─────────────────────────────
+function updateGaugeForScenario(sc, pct) {
+  const effectivePct = pct !== undefined ? pct
+    : Math.round((sc.peakGen / solarState.campusLoad) * 100);
+  const display = Math.min(100, Math.max(0, effectivePct));
+  const remain  = 100 - display;
+  const col = display > 50 ? '#1a7a3c' : display > 20 ? '#d97706' : '#dc2626';
+
+  if (solarGaugeChart) {
+    solarGaugeChart.data.datasets[0].data = [display, remain];
+    solarGaugeChart.data.datasets[0].backgroundColor = [col, '#f1f5f9'];
+    solarGaugeChart.update('none');
+    return;
+  }
+  const canvas = document.getElementById('solarGaugeChart');
+  if (!canvas) return;
+  solarGaugeChart = new Chart(canvas, {
+    type: 'doughnut',
+    data: { datasets:[{ data:[display, remain],
+      backgroundColor:[col,'#f1f5f9'], borderWidth:0, cutout:'72%'}]},
+    options:{ responsive:false, plugins:{legend:{display:false}, tooltip:{enabled:false}},
+      animation:{duration:400}}
+  });
+}
+
+// ── DUCK CURVE ────────────────────────
+function buildDuckCurve() {
+  const sc = WEATHER_SCENARIOS[currentWeather];
+  const hours = Array.from({length:19},(_,i)=>i+5);
+  const labels = hours.map(h=>`${h}:00`);
+  const solarFull = hours.map(h=>{
+    if(h<6||h>18.5) return 0;
+    const t=(h-12.5)/3.5;
+    return +(SOLAR.ratedKw*0.875*Math.exp(-t*t)*sc.irr).toFixed(1);
+  });
+  const demand = [18,25,90,148,165,162,158,155,148,150,152,148,130,115,98,80,65,45,28];
+  // Net grid demand = max(0, demand - solar)
+  const netGrid = demand.map((d,i)=>Math.max(0, d-solarFull[i]));
+
+  const datasets = [
+    { label:'Campus Demand (kW)', data:demand,
+      borderColor:'#dc2626', backgroundColor:'rgba(220,38,38,0.06)',
+      fill:true, tension:0.4, borderWidth:2, pointRadius:0 },
+    { label:`Solar Generation — ${sc.label} (kW)`, data:solarFull,
+      borderColor:'#1a7a3c', backgroundColor:'rgba(26,122,60,0.12)',
+      fill:true, tension:0.4, borderWidth:2, pointRadius:0 }
+  ];
+  // On non-clear days, add net grid demand line
+  if (sc.gridRisk) {
+    datasets.push({
+      label:'Net Grid Draw (kW)', data:netGrid,
+      borderColor:'#7c3aed', borderDash:[4,3],
+      backgroundColor:'rgba(124,58,237,0.04)',
+      fill:false, tension:0.3, borderWidth:1.5, pointRadius:0
+    });
+  }
+
+  if (duckCurveChart) duckCurveChart.destroy();
+  duckCurveChart = new Chart(document.getElementById('duckCurveChart'), {
+    type:'line', data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{family:'DM Mono',size:10}}}},
+      scales:{
+        y:{ beginAtZero:true, grid:{color:'#e2e8f0'},
+            ticks:{font:{family:'DM Mono',size:9}},
+            title:{display:true,text:'Power (kW)',font:{family:'DM Mono',size:10},color:'#64748b'} },
+        x:{ grid:{display:false}, ticks:{font:{family:'DM Mono',size:9},maxRotation:0},
+            title:{display:true,text:'Hour of Day',font:{family:'DM Mono',size:10},color:'#64748b'} }
+      }
+    }
+  });
+}
+
+// ── GRID OFFSET CHART ─────────────────
+function buildGridOffset() {
+  const sc = WEATHER_SCENARIOS[currentWeather];
+  const labels  = sc.gridDraw > 0
+    ? ['Solar (Campus Use)', 'Grid Draw', 'Exported']
+    : ['Solar (Campus Use)', 'Exported to Grid'];
+  const data    = sc.gridDraw > 0
+    ? [Math.max(0, 310-sc.gridDraw), sc.gridDraw, sc.export]
+    : [310, sc.export];
+  const colors  = sc.gridDraw > 0
+    ? ['#1a7a3c', '#dc2626', '#22a052']
+    : ['#1a7a3c', '#22a052'];
+
+  if (gridOffsetChart) gridOffsetChart.destroy();
+  gridOffsetChart = new Chart(document.getElementById('gridOffsetChart'), {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:0, cutout:'60%'}]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom', labels:{font:{family:'DM Mono',size:10},boxWidth:12}}}
+    }
+  });
+
+  // Update result boxes
+  setText('sol-gen-today', `${sc.dailyGen} <span style="font-size:.65rem;font-weight:400;">kWh</span>`);
+  const expEl = document.getElementById('sol-export-today');
+  if (expEl) {
+    if (sc.gridDraw > 0) {
+      expEl.closest('.res-box').style.borderColor = 'rgba(220,38,38,.3)';
+      expEl.closest('.res-box').style.background  = 'rgba(220,38,38,.05)';
+      expEl.style.color = 'var(--red)';
+      expEl.innerHTML = `${sc.gridDraw} <span style="font-size:.65rem;font-weight:400;">kWh grid</span>`;
+      expEl.closest('.res-box').querySelector('.res-lbl').textContent = 'Grid Supplementing';
+    } else {
+      expEl.closest('.res-box').style.borderColor = 'rgba(26,122,60,.3)';
+      expEl.closest('.res-box').style.background  = 'rgba(26,122,60,.05)';
+      expEl.style.color = 'var(--green)';
+      expEl.innerHTML = `${sc.export} <span style="font-size:.65rem;font-weight:400;">kWh</span>`;
+      expEl.closest('.res-box').querySelector('.res-lbl').textContent = 'Exported to Grid';
+    }
+  }
+}
+
+// ── SUN-CAST ──────────────────────────
+const SUNCAST_DATA = [
+  { day:'Today',    icon:'☀️',  label:'Clear',         gen:796, pct:100, export:486 },
+  { day:'Tomorrow', icon:'🌤️', label:'Mostly Sunny',  gen:724, pct:100, export:414 },
+  { day:'Wed',      icon:'⛅',  label:'Partly Cloudy', gen:450, pct:100, export:140 },
+  { day:'Thu',      icon:'🌥️', label:'Mostly Cloudy', gen:285, pct:92,  export:0   },
+  { day:'Fri',      icon:'☀️',  label:'Clear',         gen:820, pct:100, export:510 },
+];
+function buildSunCast() {
+  const el = document.getElementById('suncast-grid');
+  if (!el) return;
+  el.innerHTML = SUNCAST_DATA.map(d=>`
+    <div style="display:grid;grid-template-columns:36px 80px 1fr auto;align-items:center;gap:.5rem;
+      padding:.45rem .65rem;border-radius:8px;background:${d.pct>=100?'rgba(26,122,60,.05)':'rgba(217,119,6,.06)'};
+      border:1px solid ${d.pct>=100?'rgba(26,122,60,.15)':'rgba(217,119,6,.2)'};">
+      <div style="font-size:1.2rem;text-align:center;">${d.icon}</div>
+      <div style="font-size:.72rem;font-weight:700;">${d.day}</div>
+      <div style="font-size:.68rem;color:var(--muted);">${d.label}</div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--font-display);font-size:.85rem;font-weight:800;color:${d.pct>=100?'var(--green)':'var(--amber)'};">${d.gen} kWh</div>
+        <div style="font-size:.6rem;color:${d.pct>=100?'var(--green)':'var(--muted);'};">${d.pct>=100?'✅ Full offset + '+d.export+' kWh export':d.pct+'% — grid tops up'}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── SMART SCHEDULE ────────────────────
+const SCHEDULES = {
+  solar: [
+    { time:'11:00 AM', load:'EEE Machine Lab',     kva:48, note:'Run now — solar peak', ok:true  },
+    { time:'11:30 AM', load:'Computer Labs (CSE)',  kva:55, note:'Run now — solar peak', ok:true  },
+    { time:'12:00 PM', load:'Workshop Equipment',  kva:22, note:'Reschedule to 12PM',   ok:true  },
+    { time:'02:30 PM', load:'EEE Power Lab',        kva:18, note:'Before solar dip',     ok:true  },
+    { time:'04:00 PM', load:'Pumps & Motors',       kva:18, note:'Use battery buffer',   ok:false },
+  ],
+  grid: [
+    { time:'11:00 AM', load:'EEE Machine Lab',     kva:48, note:'⚠ Deferred — low solar',       ok:false },
+    { time:'11:30 AM', load:'Computer Labs (CSE)',  kva:55, note:'Stagger — avoid grid peak',     ok:false },
+    { time:'12:00 PM', load:'Workshop Equipment',  kva:22, note:'⚠ Grid power only — monitor MD',ok:false },
+    { time:'02:30 PM', load:'EEE Power Lab',        kva:18, note:'Defer to battery support',      ok:false },
+    { time:'06:00 PM', load:'Pumps & Motors',       kva:18, note:'After peak window',             ok:true  },
+  ],
+  emergency: [
+    { time:'NOW',      load:'EEE Machine Lab',     kva:48, note:'🚨 Shed — grid overload risk',  ok:false },
+    { time:'NOW',      load:'Computer Labs (CSE)',  kva:55, note:'🚨 Shed — reduce to essential', ok:false },
+    { time:'NOW',      load:'Workshop Equipment',  kva:22, note:'🚨 Shed immediately',            ok:false },
+    { time:'Running',  load:'IT Servers & UPS',    kva:14, note:'✅ Critical — keep running',     ok:true  },
+    { time:'Running',  load:'Admin & Safety',       kva:12, note:'✅ Critical — keep running',    ok:true  },
+  ]
+};
+
+function buildSmartSchedule() {
+  const sc = WEATHER_SCENARIOS[currentWeather];
+  const list = SCHEDULES[sc.scheduleMode] || SCHEDULES.solar;
+  const el = document.getElementById('smart-schedule');
+  if (!el) return;
+  el.innerHTML = list.map(s=>`
+    <div style="display:grid;grid-template-columns:68px 1fr auto;align-items:center;gap:.5rem;
+      padding:.45rem .65rem;border-radius:8px;
+      background:${s.ok?'rgba(26,122,60,.05)':'rgba(220,38,38,.04)'};
+      border:1px solid ${s.ok?'rgba(26,122,60,.15)':'rgba(220,38,38,.15)'};">
+      <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--muted);">${s.time}</div>
+      <div>
+        <div style="font-size:.73rem;font-weight:600;">${s.load}</div>
+        <div style="font-size:.63rem;color:${s.ok?'var(--green)':'var(--red)'};">${s.note}</div>
+      </div>
+      <div style="font-family:var(--font-display);font-size:.8rem;font-weight:700;color:var(--amber);">${s.kva} KVA</div>
+    </div>`).join('');
+}
+
+// ── HEALTH ALERTS ─────────────────────
+function buildHealthAlerts(eff, invT, watt, hour, sc) {
+  const el = document.getElementById('solar-alerts');
+  if (!el) return;
+  const alerts = [];
+
+  if (sc && sc.gridRisk && sc.penaltyRisk) {
+    alerts.push({ type:'danger', icon:'⚡',
+      title:'Grid Penalty Risk — Sanctioned Load Approaching',
+      msg:`Solar generation is negligible (${sc.effKwp} kWp effective). Campus demand may approach 250 kVA sanctioned limit. Load shedding protocol activated. Estimated demand charge this month: ₹2,00,000+.`
+    });
+  } else if (sc && sc.gridRisk) {
+    alerts.push({ type:'warn', icon:'🔌',
+      title:'Low Irradiance — Grid Supplementing Campus Load',
+      msg:`Effective solar output: ${sc.effKwp} kWp (${Math.round(sc.irr*100)}% of rated 181 kWp). Admin (60→${sc.blockEff.Admin} kWp) and IT (50→${sc.blockEff.IT} kWp) arrays cannot shave peak. Grid drawing ${sc.gridDraw} kWh today. Battery discharging to support IT Servers.`
+    });
+  }
+  if (hour >= 9 && hour <= 15 && eff < 65 && watt > 0) {
+    alerts.push({ type:'warn', icon:'🧹',
+      title:'Dust / Obstruction Detected',
+      msg:`Panel efficiency ${eff.toFixed(1)}% — below 65% threshold for this hour. Schedule panel cleaning.`
+    });
+  }
+  if (invT > SOLAR.invMaxTemp) {
+    alerts.push({ type:'danger', icon:'🌡️',
+      title:'Inverter Overheating',
+      msg:`Inverter at ${invT}°C — exceeds safe limit of ${SOLAR.invMaxTemp}°C. Check ventilation.`
+    });
+  }
+  if (solarState.soc < 15) {
+    alerts.push({ type:'danger', icon:'🔋',
+      title:'Battery Critical — Switched to Grid',
+      msg:`Battery SoC at ${solarState.soc.toFixed(0)}%. Critical loads switched to grid supply.`
+    });
+  }
+
+  el.innerHTML = alerts.map(a=>`
+    <div style="padding:.7rem 1rem;border-radius:0 8px 8px 0;margin-bottom:.4rem;
+      background:${a.type==='danger'?'rgba(220,38,38,.06)':'rgba(217,119,6,.07)'};
+      border-left:4px solid ${a.type==='danger'?'var(--red)':'var(--amber)'};
+      font-size:.77rem;line-height:1.7;">
+      <strong style="color:${a.type==='danger'?'var(--red)':'var(--amber)'};">${a.icon} ${a.title}</strong><br>${a.msg}
+    </div>`).join('');
+}
+
+// ── PANEL HEALTH ──────────────────────
+function buildPanelHealth(eff, invT, soc, sc) {
+  const el = document.getElementById('panel-health');
+  if (!el) return;
+  const scLabel = sc ? sc.label : 'Clear';
+  const checks = [
+    { label:'Panel Output vs Expected',  ok:eff>=65,    val:eff.toFixed(1)+'%',  note:eff>=65?'Within normal range':'Below threshold — clean panels' },
+    { label:'Weather / Irradiance',      ok:sc&&sc.irr>=0.6, val:scLabel,       note:sc&&sc.irr>=0.6?'Acceptable irradiance':'Low irradiance — reduced output expected' },
+    { label:'Inverter Temperature',      ok:invT<=55,   val:invT+'°C',          note:invT<=55?'Normal':'Overheating — check ventilation' },
+    { label:'Battery State of Charge',   ok:soc>=20,    val:soc+'%',            note:soc>=20?'Healthy':'Low SoC — reduce non-essential loads' },
+    { label:'Battery Mode',              ok:sc&&sc.battMode==='charging', val:sc?sc.battMode:'--', note:sc&&sc.battMode==='charging'?'Charging from solar':'Discharging to support campus' },
+    { label:'PZEM-017 Sensor',           ok:true,       val:'Online',           note:'ESP32 node connected' },
+    { label:'Grid Penalty Risk',         ok:sc&&!sc.penaltyRisk, val:sc&&sc.penaltyRisk?'HIGH':'None', note:sc&&sc.penaltyRisk?'Load shedding required now':'Demand within safe limits' },
+    { label:'Last Panel Cleaning',       ok:false,      val:'12 days ago',      note:'Clean every 7 days in Hyderabad summer' },
+  ];
+  el.innerHTML = checks.map(c=>`
+    <div style="display:flex;align-items:center;gap:.6rem;padding:.38rem .5rem;
+      border-radius:6px;background:${c.ok?'rgba(26,122,60,.04)':'rgba(220,38,38,.04)'};
+      border:1px solid ${c.ok?'rgba(26,122,60,.12)':'rgba(220,38,38,.15)'};">
+      <div style="font-size:.82rem;flex-shrink:0;">${c.ok?'✅':'⚠️'}</div>
+      <div style="flex:1;">
+        <div style="font-size:.72rem;font-weight:600;">${c.label}</div>
+        <div style="font-size:.63rem;color:var(--muted);">${c.note}</div>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:.7rem;font-weight:700;
+        color:${c.ok?'var(--green)':'var(--red)'};">${c.val}</div>
+    </div>`).join('');
+}
+
+
+// ═══════════════════════════════════
+// LIVE SIMULATION
+// ═══════════════════════════════════
+function startLiveSimulation(){
+  setInterval(()=>{
+    const delta=(Math.random()-.5)*liveLoadBase*.06;
+    liveLoadCurrent=Math.max(80,liveLoadBase+delta);
+    const pf=0.88+Math.random()*.09;
+    const kva=liveLoadCurrent/pf;
+    document.getElementById('d-live-load').innerHTML=`${liveLoadCurrent.toFixed(1)} <span style="font-size:.75rem;font-weight:400;">kW</span>`;
+    document.getElementById('d-pf').innerHTML=`${pf.toFixed(2)} <span style="font-size:.75rem;font-weight:400;">pu</span>`;
+    renderPQCards(pf,kva,liveLoadCurrent);
+    occHistory.push(parseFloat(liveLoadCurrent.toFixed(1)));
+    if(occHistory.length>30)occHistory.shift();
+    if(occChart){occChart.data.labels=occHistory.map((_,i)=>`-${occHistory.length-i}s`);occChart.data.datasets[0].data=occHistory;occChart.update('none');}
+  },4000);
+}
+
+function renderPQCards(pf,kva,kw){
+  const thd=(5+Math.random()*8).toFixed(1);
+  const volt=(225+Math.random()*10).toFixed(0);
+  const imb=(Math.random()*3).toFixed(1);
+  const pfOk=pf>=.95?'pq-ok':pf>=.9?'pq-warn':'pq-bad';
+  const pfStatus=pf>=.95?'✅ Good':pf>=.9?'⚠️ Acceptable':'🚨 Poor — Check Cap. Banks';
+  document.getElementById('pq-grid').innerHTML=`
+    <div class="pq-card"><div class="pq-lbl">Power Factor</div><div class="pq-val" style="color:${pf>=.95?'var(--green)':pf>=.9?'var(--amber)':'var(--red)'};">${pf.toFixed(3)} <span style="font-size:.65rem;font-weight:400;">pu</span></div><div class="pf-bar-wrap"><div class="pf-bar" style="width:${pf*100}%;background:${pf>=.95?'var(--gl)':pf>=.9?'var(--amber)':'var(--red)'};"></div></div><span class="pq-status ${pfOk}">${pfStatus}</span></div>
+    <div class="pq-card"><div class="pq-lbl">Apparent Demand</div><div class="pq-val" style="color:var(--blue);">${kva.toFixed(1)} <span style="font-size:.65rem;font-weight:400;">kVA</span></div><span class="pq-status ${kva<=250*.8?'pq-ok':kva<=250?'pq-warn':'pq-bad'}">${kva<=250*.8?'Within Limit':kva<=250?'Near Limit':'⚠️ Exceeds!'}</span></div>
+    <div class="pq-card"><div class="pq-lbl">Total Harmonic Distortion</div><div class="pq-val" style="color:${thd<8?'var(--green)':thd<15?'var(--amber)':'var(--red)'};">${thd} <span style="font-size:.65rem;font-weight:400;">%</span></div><span class="pq-status ${thd<8?'pq-ok':thd<15?'pq-warn':'pq-bad'}">${thd<8?'✅ Good':'⚠️ Moderate'}</span></div>
+    <div class="pq-card"><div class="pq-lbl">Supply Voltage</div><div class="pq-val" style="color:var(--blue);">${volt} <span style="font-size:.65rem;font-weight:400;">V</span></div><span class="pq-status ${volt>=220&&volt<=240?'pq-ok':'pq-warn'}">${volt>=220&&volt<=240?'✅ Normal':'⚠️ Deviation'}</span></div>
+    <div class="pq-card"><div class="pq-lbl">Phase Imbalance</div><div class="pq-val" style="color:${imb<1?'var(--green)':imb<2?'var(--amber)':'var(--red)'};">${imb} <span style="font-size:.65rem;font-weight:400;">%</span></div><span class="pq-status ${imb<1?'pq-ok':imb<2?'pq-warn':'pq-bad'}">${imb<1?'✅ Balanced':imb<2?'⚠️ Minor':'🚨 Check'}</span></div>
+    <div class="pq-card"><div class="pq-lbl">Active Load</div><div class="pq-val" style="color:var(--purple);">${kw.toFixed(1)} <span style="font-size:.65rem;font-weight:400;">kW</span></div><span class="pq-status pq-ok">ESP32 Live</span></div>`;
+}
+
+// ═══════════════════════════════════
+// PERIOD TOGGLE
+// ═══════════════════════════════════
+const PERIOD={
+  day:{labels:['6AM','8AM','10AM','12PM','2PM','4PM','6PM'],data:[1.2,3.8,7.1,8.4,7.9,5.2,2.1],mult:1/30,lbl:'Today'},
+  week:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],data:[18,22,21,21,19,8,5],mult:7/30,lbl:'This Week'},
+  month:{labels:['Oct','Nov','Dec','Jan','Feb'],data:[0,0,0,0,0],mult:1,lbl:'This Month'},
+  year:{labels:['2024 Q1','Q2','Q3','Q4','2025 Q1'],data:[0,0,0,0,0],mult:12,lbl:'This Year'}
+};
+function setPeriod(p,btn){
+  currentPeriod=p; document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active');
+  const d=PERIOD[p]; const data=[...d.data]; data[data.length-1]=parseFloat((totalSavedMonth*d.mult).toFixed(1));
+  savingsChart.data.labels=d.labels; savingsChart.data.datasets[0].data=data; savingsChart.update();
+  const m=d.mult;
+  document.getElementById('d-saved').innerHTML=`${(totalSavedMonth*m).toFixed(1)} <span style="font-size:.75rem;font-weight:400;">kWh</span>`;
+  document.getElementById('d-cost').textContent='₹'+(costSavedMonth*m).toFixed(0);
+  document.getElementById('d-co2').innerHTML=`${(totalSavedMonth*m*.82).toFixed(0)} <span style="font-size:.75rem;font-weight:400;">kg CO₂</span>`;
+  document.getElementById('d-saved-lbl').textContent=`Energy Saved (${d.lbl})`;
+  document.getElementById('d-cost-lbl').textContent=`Cost Saved (${d.lbl})`;
+}
+function updateDashboard(){
+  const m=PERIOD[currentPeriod].mult;
+  document.getElementById('d-saved').innerHTML=`${(totalSavedMonth*m).toFixed(1)} <span style="font-size:.75rem;font-weight:400;">kWh</span>`;
+  document.getElementById('d-cost').textContent='₹'+(costSavedMonth*m).toFixed(0);
+  document.getElementById('d-co2').innerHTML=`${(totalSavedMonth*m*.82).toFixed(0)} <span style="font-size:.75rem;font-weight:400;">kg CO₂</span>`;
+  if(savingsChart){const d=savingsChart.data.datasets[0].data;d[d.length-1]=parseFloat((totalSavedMonth*m).toFixed(1));savingsChart.update();}
+}
+
+// ═══════════════════════════════════
+// LIGHTING
+// ═══════════════════════════════════
+function addLux(){const i=document.createElement('input');i.type='number';i.className='lux-in';i.placeholder='Lux';document.getElementById('lux-inputs').appendChild(i);}
+const CF_MAP={fluorescent:1.08,mercury:1.14,sodium:1.22,led:1.00};
+function getTarget(RI,sect){
+  const ri=[1,1.25,1.5,2,2.5,3,4,5],com=[36,40,43,46,48,50,52,53],ind=[33,36,39,42,44,46,48,49];
+  const v=sect==='industrial'?ind:com,rc=Math.max(1,Math.min(5,RI));
+  for(let i=0;i<ri.length-1;i++)if(rc>=ri[i]&&rc<=ri[i+1]){const t=(rc-ri[i])/(ri[i+1]-ri[i]);return v[i]+t*(v[i+1]-v[i]);}
+  return v[v.length-1];
+}
+function runLighting(){
+  const room=document.getElementById('l-room').value||'Room';
+  const L=+document.getElementById('l-L').value,W=+document.getElementById('l-W').value,H=+document.getElementById('l-H').value;
+  const n=+document.getElementById('l-lamps').value,w=+document.getElementById('l-watt').value;
+  const src=document.getElementById('l-src').value,sect=document.getElementById('l-sect').value;
+  const lux=[...document.querySelectorAll('#lux-inputs input')].map(i=>+i.value).filter(v=>v>0);
+  if(!lux.length){alert('Add lux readings.');return;}
+  const area=L*W,RI=L*W/(H*(L+W)),cW=n*w,wm2=cW/area;
+  const avg=lux.reduce((a,b)=>a+b,0)/lux.length,net=avg*CF_MAP[src],lpwm2=net/wm2,target=getTarget(RI,sect),ILER=lpwm2/target;
+  const cls=ILER>=.75?'iler-good':ILER>.5?'iler-review':'iler-urgent';
+  const msg=ILER>=.75?'✅ Satisfactory to Good':ILER>.5?'⚠️ Review Suggested':'🚨 Urgent Action Required';
+  lastAudit.lighting={room,RI,cW,wm2,avg,net,target,ILER,msg};
+  document.getElementById('l-res-room').textContent=room;
+  document.getElementById('l-badge').innerHTML=`<span class="iler-badge ${cls}">ILER = ${ILER.toFixed(2)} → ${msg}</span>`;
+  document.getElementById('l-res-boxes').innerHTML=`
+    <div class="res-box"><div class="res-val">${RI.toFixed(2)}</div><div class="res-lbl">Room Index (RI)</div></div>
+    <div class="res-box"><div class="res-val">${cW} W</div><div class="res-lbl">Circuit Load</div></div>
+    <div class="res-box"><div class="res-val">${wm2.toFixed(2)} W/m²</div><div class="res-lbl">Installed Load Density</div></div>
+    <div class="res-box"><div class="res-val">${avg.toFixed(0)} lux</div><div class="res-lbl">Avg Measured Lux</div></div>
+    <div class="res-box"><div class="res-val">${net.toFixed(0)} lux</div><div class="res-lbl">Net Lux</div></div>
+    <div class="res-box"><div class="res-val">${target.toFixed(0)} lux·W/m²</div><div class="res-lbl">Target (BEE Standard)</div></div>`;
+  document.getElementById('l-results').style.display='block';
+  if(luxBarChart)luxBarChart.destroy();
+  luxBarChart=new Chart(document.getElementById('luxBarChart'),{type:'bar',data:{labels:lux.map((_,i)=>`P${i+1}`),datasets:[{label:'Measured Lux',data:lux,backgroundColor:lux.map(v=>v>=target?'#00c9a7':v>=target*.7?'#e67e22':'#c0392b'),borderRadius:5},{label:'Target',data:lux.map(()=>target),type:'line',borderColor:'#00c9a7',borderWidth:2,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Space Mono',size:10}}}},scales:{y:{beginAtZero:true,title:{display:true,text:'Illuminance (Lux)',font:{family:'Space Mono',size:10},color:'#7aa89e'},grid:{color:'rgba(26,122,60,.07)'}},x:{grid:{display:false},title:{display:true,text:'Measurement Point',font:{family:'Space Mono',size:10},color:'#7aa89e'}}}}});
+  if(luxDonut)luxDonut.destroy();
+  luxDonut=new Chart(document.getElementById('luxDonut'),{type:'doughnut',data:{labels:['Net Lux','Gap'],datasets:[{data:[Math.min(net,target*1.5),Math.max(0,target*1.5-net)],backgroundColor:[ILER>=.75?'#00c9a7':ILER>.5?'#e67e22':'#c0392b','rgba(26,122,60,.07)'],borderWidth:0,cutout:'68%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Space Mono',size:10}}}}}});
+  const kwhSaved=Math.max(0,(cW-n*18)*6*26/1000);
+  totalSavedMonth+=kwhSaved; costSavedMonth+=kwhSaved*8;
+  addLog(`Lighting: ${room} | ILER=${ILER.toFixed(2)} | ${msg.replace(/[✅⚠️🚨]/g,'').trim()}`);
+  updateDashboard();
+}
+
+// ═══════════════════════════════════
+// APPLIANCE + PAYBACK
+// ═══════════════════════════════════
+function addAppRow(){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" class="lux-in" style="width:130px" placeholder="Appliance"></td><td><input type="number" class="lux-in" value="1"></td><td><input type="number" class="lux-in" value="100"></td><td><input type="number" class="lux-in" value="60"></td><td><input type="number" class="lux-in" value="6"></td><td><input type="number" class="lux-in" value="500"></td><td class="saving-day-cell">—</td><td class="saving-mo-cell">—</td><td class="payback-cell">—</td><td><span class="saving-pct">—</span><div class="saving-bar"><div class="saving-fill" style="width:0%"></div></div></td>`;
+  document.getElementById('a-tbody').appendChild(tr);
+}
+function runAppliance(){
+  const tariff=+document.getElementById('a-tariff').value||8;
+  const days=+document.getElementById('a-days').value||26;
+  const block=document.getElementById('a-block').value;
+  const rows=document.querySelectorAll('#a-tbody tr');
+  let labels=[],baseline=[],optimized=[];
+  rows.forEach(row=>{
+    const nameCell=row.cells[0];
+    const name=(nameCell.querySelector('input[type=text]')?.value||nameCell.textContent).trim().slice(0,20);
+    const nums=[...row.querySelectorAll('input[type=number]')].map(i=>+i.value);
+    if(nums.length<5)return;
+    const[qty,bw,ow,hrs,unitCost]=nums;
+    const bkwh=qty*bw*hrs*days/1000, okwh=qty*ow*hrs*days/1000;
+    const savedKwh=bkwh-okwh, savedCostMo=savedKwh*tariff;
+    const savedKwhDay=qty*(bw-ow)*hrs/1000, savedCostDay=savedKwhDay*tariff;
+    const totalUnitCost=unitCost*qty;
+    let pbText='—',pbClass='';
+    if(unitCost>0&&savedCostMo>0){const pb=totalUnitCost/savedCostMo;pbText=pb<12?`${pb.toFixed(1)} mo`:pb<36?`${(pb/12).toFixed(1)} yr`:`${(pb/12).toFixed(0)} yr`;pbClass=pb<18?'pb-good':pb<36?'pb-ok':'pb-long';}
+    else if(unitCost===0){pbText='No cost';pbClass='pb-good';}
+    const pct=bw>0?Math.round((bw-ow)/bw*100):0;
+    labels.push(name||'Item'); baseline.push(+bkwh.toFixed(2)); optimized.push(+okwh.toFixed(2));
+    row.querySelector('.saving-day-cell').textContent=savedCostDay>0?'₹'+savedCostDay.toFixed(1):'—';
+    row.querySelector('.saving-mo-cell').textContent=savedCostMo>0?'₹'+savedCostMo.toFixed(0):'—';
+    const pc=row.querySelector('.payback-cell');pc.textContent=pbText;pc.className=`payback-cell ${pbClass}`;
+    const bar=row.querySelector('.saving-fill'),pctEl=row.querySelector('.saving-pct');
+    if(bar)bar.style.width=pct+'%';if(pctEl)pctEl.textContent=pct+'%';
+  });
+  const tBase=baseline.reduce((a,b)=>a+b,0),tOpt=optimized.reduce((a,b)=>a+b,0),saved=tBase-tOpt,cSave=saved*tariff,pct=tBase>0?(saved/tBase*100).toFixed(1):0;
+  const savedPerDay=(saved/days),cSavePerDay=savedPerDay*tariff;
+  lastAudit.appliance={block,tBase,tOpt,saved,cBase:tBase*tariff,cOpt:tOpt*tariff,cSave,pct,labels,baseline,optimized};
+  document.getElementById('a-res-block').textContent=block;
+  document.getElementById('a-res-boxes').innerHTML=`
+    <div class="res-box danger"><div class="res-val">${tBase.toFixed(0)} <span style="font-size:.65rem;font-weight:400;">kWh</span></div><div class="res-lbl">Baseline / Month</div></div>
+    <div class="res-box"><div class="res-val">${tOpt.toFixed(0)} <span style="font-size:.65rem;font-weight:400;">kWh</span></div><div class="res-lbl">Optimized / Month</div></div>
+    <div class="res-box"><div class="res-val">${saved.toFixed(0)} <span style="font-size:.65rem;font-weight:400;">kWh</span></div><div class="res-lbl">Saved / Month</div></div>
+    <div class="res-box"><div class="res-val">${savedPerDay.toFixed(1)} <span style="font-size:.65rem;font-weight:400;">kWh</span></div><div class="res-lbl">Saved / Day</div></div>
+    <div class="res-box warn"><div class="res-val">₹${cSavePerDay.toFixed(0)}</div><div class="res-lbl">Cost Saved / Day</div></div>
+    <div class="res-box warn"><div class="res-val">₹${cSave.toFixed(0)}</div><div class="res-lbl">Cost Saved / Month</div></div>
+    <div class="res-box"><div class="res-val">${pct} <span style="font-size:.65rem;font-weight:400;">%</span></div><div class="res-lbl">Saving Potential</div></div>`;
+  document.getElementById('a-results').style.display='block';
+  if(appChart)appChart.destroy();
+  appChart=new Chart(document.getElementById('appChart'),{type:'bar',data:{labels,datasets:[{label:'Baseline (kWh/mo)',data:baseline,backgroundColor:'#c0392b',borderRadius:5},{label:'Optimized (kWh/mo)',data:optimized,backgroundColor:'#00c9a7',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Space Mono',size:10}}}},scales:{x:{grid:{display:false},title:{display:true,text:'Appliance / Equipment',font:{family:'Space Mono',size:10},color:'#7aa89e'}},y:{beginAtZero:true,title:{display:true,text:'Energy Consumption (kWh/month)',font:{family:'Space Mono',size:10},color:'#7aa89e'},grid:{color:'rgba(26,122,60,.07)'}}}}});
+  totalSavedMonth+=saved; costSavedMonth+=cSave;
+  addLog(`Appliance: ${block} | Saved ${saved.toFixed(0)} kWh | ₹${cSave.toFixed(0)}/mo`);
+  updateDashboard();
+}
+
+// ═══════════════════════════════════
+// OCCUPANCY
+// ═══════════════════════════════════
+function buildRooms(){
+  const grid=document.getElementById('rooms-grid'); grid.innerHTML='';
+  ROOMS.forEach((r,i)=>{
+    const card=document.createElement('div');
+    card.className=`room-card ${occState[i]?'occupied':'vacant'}`;
+    card.id=`room-${i}`;
+    card.innerHTML=`<div class="room-name">${r.name}</div><div class="room-load">${r.load} kW · ${r.block}</div>
+      <label class="toggle-sw"><input type="checkbox" ${occState[i]?'checked':''} onchange="toggleRoom(${i},this.checked)"><div class="toggle-track"></div></label>
+      <div style="font-size:.63rem;color:var(--muted);margin-top:.28rem;" id="room-status-${i}">${occState[i]?'🟢 Occupied':'⚫ Vacant — auto off'}</div>`;
+    grid.appendChild(card);
+  });
+  updateOccupancy();
+}
+function toggleRoom(idx,on){
+  occState[idx]=on;
+  const card=document.getElementById(`room-${idx}`);
+  card.className=`room-card ${on?'occupied':'vacant'}`;
+  document.getElementById(`room-status-${idx}`).textContent=on?'🟢 Occupied':'⚫ Vacant — auto off';
+  updateOccupancy();
+  addLog(`Sensor: ${ROOMS[idx].name} → ${on?'OCCUPIED':'VACANT (lights off)'}`);
+  // Digital twin — redraw blueprint if visible
+  if(heatOn) drawFloorPlan();
+  if(heatOn) showHotspotList();
+}
+function updateOccupancy(){
+  const on=occState.filter(Boolean).length;
+  const active=ROOMS.filter((_,i)=>occState[i]).reduce((s,r)=>s+r.load,0);
+  const pf=.88,kva=active/pf;
+  const total=ROOMS.reduce((s,r)=>s+r.load,0);
+  const savedCost=(total-active)*8*.25;
+  const pct=Math.min(100,(kva/SANCTIONED_KVA)*100);
+  document.getElementById('oc-rooms').textContent=`${on}/${ROOMS.length}`;
+  document.getElementById('oc-load').textContent=`${active.toFixed(1)} kW`;
+  document.getElementById('oc-kva').textContent=`${kva.toFixed(1)} kVA`;
+  document.getElementById('oc-saved').textContent=`₹${savedCost.toFixed(0)}`;
+  document.getElementById('oc-pct').textContent=`${pct.toFixed(0)}%`;
+  const bar=document.getElementById('demand-bar');
+  bar.style.width=pct+'%'; bar.style.background=pct<80?'var(--green)':pct<95?'var(--amber)':'var(--red)';
+  const alert=document.getElementById('demand-alert');
+  if(pct>95){
+    alert.classList.add('show');
+    document.getElementById('demand-alert-msg').innerHTML=`<strong>Current: ${kva.toFixed(1)} kVA</strong> — ${pct.toFixed(0)}% of sanctioned limit (${SANCTIONED_KVA} kVA).<br>Heavy penalty charges will apply. Turn off at least ${Math.ceil((kva-SANCTIONED_KVA*.9)/12)} rooms to reduce load.`;
+    showToast('🚨 Peak Demand Alert! Exceeding sanctioned load!',true);
+  } else {alert.classList.remove('show');}
+  liveLoadBase=active;
+}
+
+// ═══════════════════════════════════
+// PEAK DEMAND AUDIT — STEPPER + BLOCK FILTER
+// ═══════════════════════════════════
+
+const LOAD_PROFILES = {
+  weekday: [18,15,12,10,10,22,55,105,180,295,310,305,240,260,285,290,265,210,145,95,75,60,40,25],
+  weekend: [15,12,10,8,8,12,20,35,55,75,90,95,90,85,80,72,60,45,35,28,22,18,16,14],
+  exam:    [18,15,12,10,10,25,65,125,200,315,340,335,260,275,295,300,270,215,155,110,85,65,42,25]
+};
+const HOURS_24 = ['12AM','1','2','3','4','5','6AM','7','8','9','10AM','11','12PM','1','2','3PM','4','5','6PM','7','8','9','10PM','11'];
+const CONTRACTED_MD = 400;
+const SANCTIONED    = 250;
+const PENALTY_THRESH = SANCTIONED * 0.80; // 200 KVA
+
+// Equipment with per-block tags
+// block: 'All' = shared across campus (ACs, lighting, pumps)
+const EQUIPMENT = [
+  {name:'Computer Labs',         detail:'CSE + IT + Admin',       block:'CSE',   kva:98, shiftable:true},
+  {name:'Air Conditioners',      detail:'All blocks combined',     block:'All',   kva:72, shiftable:false},
+  {name:'EEE Machine & Labs',    detail:'Machine lab, power lab',  block:'EEE',   kva:48, shiftable:true},
+  {name:'Lighting — All Floors', detail:'Fluorescent + LED',       block:'All',   kva:32, shiftable:false},
+  {name:'Admin & Seminar Halls', detail:'Offices, conf. rooms',    block:'Admin', kva:28, shiftable:true},
+  {name:'Pumps, Lifts & Misc',   detail:'Motors, elevators',       block:'All',   kva:18, shiftable:true},
+  {name:'IT Servers & UPS',      detail:'Server room, UPS banks',  block:'IT',    kva:14, shiftable:true},
+];
+
+const BLOCK_COSTS = {ALL:373457, EEE:77258, CSE:79819, IT:61880, Admin:49940, ECE:104560};
+const BLOCK_LABELS = {ALL:'Campus Total', EEE:'EEE Block', CSE:'CSE Block', IT:'IT Block', Admin:'Admin Block', ECE:'ECE Block'};
+
+let loadProfileChart, equipChart, staggerChart;
+let currentProfileMode = 'weekday';
+let currentBlockFilter = 'ALL';
+let currentStep = 1;
+let sliderOffsets = {}; // keyed by equipment name → delay minutes
+
+// ── STEPPER ──────────────────────────
+function goStep(n) {
+  for (let i = 1; i <= 3; i++) {
+    const btn   = document.getElementById('sbtn-' + i);
+    const panel = document.getElementById('step-panel-' + i);
+    if (i <= n) btn.removeAttribute('disabled');
+    btn.classList.toggle('active', i === n);
+    btn.classList.toggle('done',   i < n);
+    panel.classList.toggle('active', i === n);
+  }
+  currentStep = n;
+  if (n === 2) drawEquipContribution();
+  if (n === 3) { buildSliders(); updateStaggerChart(); }
+}
+
+// ── BLOCK FILTER ─────────────────────
+function setBlockFilter(block, btn) {
+  currentBlockFilter = block;
+  document.querySelectorAll('.blk-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cost = BLOCK_COSTS[block];
+  const lbl  = BLOCK_LABELS[block];
+  document.getElementById('block-cost-pill').textContent =
+    lbl + ' · \u20B9' + cost.toLocaleString('en-IN') + '/mo';
+  const el = document.getElementById('equip-chart-label');
+  if (el) el.textContent = lbl;
+  // ECE special notice
+  const notice = document.getElementById('ece-notice');
+  if (notice) notice.style.display = (block === 'ECE') ? 'block' : 'none';
+  if (currentStep === 2) drawEquipContribution();
+  if (currentStep === 3) { buildSliders(); updateStaggerChart(); }
+}
+
+// ── STEP 1: LOAD PROFILE ─────────────
+function setLoadProfile(mode, btn) {
+  currentProfileMode = mode;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  drawLoadProfile();
+}
+
+function drawLoadProfile() {
+  const data    = LOAD_PROFILES[currentProfileMode];
+  const peakVal = Math.max(...data);
+  const peakIdx = data.indexOf(peakVal);
+
+  const colors = data.map(v =>
+    v >= CONTRACTED_MD * 0.95 ? 'rgba(192,57,43,0.85)' :
+    v >= CONTRACTED_MD * 0.70 ? 'rgba(230,126,18,0.80)' :
+    'rgba(46,204,113,0.70)'
+  );
+
+  if (loadProfileChart) loadProfileChart.destroy();
+  loadProfileChart = new Chart(document.getElementById('loadProfileChart'), {
+    type: 'bar',
+    data: {
+      labels: HOURS_24,
+      datasets: [
+        { label: 'Campus Demand (KVA)', data: data,
+          backgroundColor: colors, borderRadius: 3, order: 2 },
+        { label: 'Contracted MD — 400 KVA',
+          data: new Array(24).fill(CONTRACTED_MD), type: 'line',
+          borderColor: '#c0392b', borderWidth: 1.5, borderDash: [5,4],
+          pointRadius: 0, fill: false, order: 1 },
+        { label: 'Penalty Zone — 200 KVA',
+          data: new Array(24).fill(PENALTY_THRESH), type: 'line',
+          borderColor: 'rgba(192,57,43,0.35)', borderWidth: 1,
+          borderDash: [3,3], pointRadius: 0,
+          fill: {target: 'origin', above: 'rgba(192,57,43,0.05)'},
+          order: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { font: { family: 'Space Mono', size: 10 },
+          filter: item => item.text !== 'Penalty Zone — 200 KVA' } },
+        tooltip: { callbacks: { label: ctx => {
+          if (ctx.datasetIndex !== 0) return null;
+          const kva = ctx.parsed.y;
+          const charge = (Math.max(kva, CONTRACTED_MD) * 500).toLocaleString('en-IN');
+          return ['Demand: ' + kva + ' KVA', 'Est. demand charge: \u20B9' + charge + '/mo'];
+        }}}
+      },
+      scales: {
+        y: { beginAtZero: true, max: 430, grid: { color: 'rgba(26,122,60,.07)' },
+             ticks: { font: { family: 'Space Mono', size: 9 } },
+             title: { display: true, text: 'Apparent Demand (KVA)',
+                      font: { family: 'Space Mono', size: 10 }, color: '#7aa89e' } },
+        x: { grid: { display: false }, ticks: { font: { family: 'Space Mono', size: 9 } },
+             title: { display: true, text: 'Hour of Day',
+                      font: { family: 'Space Mono', size: 10 }, color: '#7aa89e' } }
+      }
+    }
+  });
+
+  const abovePct = ((peakVal / CONTRACTED_MD) * 100).toFixed(0);
+  const peakCost = (CONTRACTED_MD * 500).toLocaleString('en-IN');
+  document.getElementById('peak-finding').innerHTML =
+    '<div class="res-box danger"><div class="res-val">' + peakVal +
+      ' <span style="font-size:.65rem;font-weight:400;">KVA</span></div><div class="res-lbl">Peak Demand</div></div>' +
+    '<div class="res-box warn"><div class="res-val">' + HOURS_24[peakIdx] +
+      '</div><div class="res-lbl">Peak Hour</div></div>' +
+    '<div class="res-box warn"><div class="res-val">' + abovePct +
+      ' <span style="font-size:.65rem;font-weight:400;">%</span></div><div class="res-lbl">% of Contracted MD</div></div>' +
+    '<div class="res-box"><div class="res-val">\u20B9' + peakCost +
+      '</div><div class="res-lbl">Demand Charge / Month</div></div>';
+
+  addLog('Load Profile [' + currentProfileMode + '] — Peak: ' + peakVal + ' KVA at ' + HOURS_24[peakIdx]);
+}
+
+// ── STEP 2: EQUIPMENT CONTRIBUTION ───
+function drawEquipContribution() {
+  const filter  = currentBlockFilter;
+  // ECE has no equipment mapped — show placeholder
+  if (filter === 'ECE') {
+    document.getElementById('equip-tbody').innerHTML =
+      '<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:.78rem;">' +
+      '⚠️ ECE Block floor plan not yet obtained. Equipment-level breakdown unavailable.<br>' +
+      '<strong style="color:#e67e22;">ECE monthly cost ₹1,04,560</strong> — highest on campus. Audit pending structural drawings.</td></tr>';
+    if (equipChart) { equipChart.destroy(); equipChart = null; }
+    return;
+  }
+
+  const visible = filter === 'ALL' ? EQUIPMENT
+    : EQUIPMENT.filter(e => e.block === filter || e.block === 'All');
+  const campusTotal = EQUIPMENT.reduce((s,e) => s + e.kva, 0);
+
+  document.getElementById('equip-tbody').innerHTML = visible.map((e, i) => {
+    const pct      = (e.kva / campusTotal * 100).toFixed(1);
+    const cost     = (e.kva * 500).toLocaleString('en-IN');
+    const priority = e.kva >= 70
+      ? '<span style="background:var(--rp);color:var(--red);font-size:.67rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;">🔴 High</span>'
+      : e.kva >= 30
+        ? '<span style="background:var(--ap);color:var(--amber);font-size:.67rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;">🟠 Medium</span>'
+        : '<span style="background:var(--gp);color:var(--green);font-size:.67rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;">🟢 Low</span>';
+    const shiftTag = e.shiftable
+      ? '<span style="font-size:.65rem;color:var(--blue);">✓ Can stagger</span>'
+      : '<span style="font-size:.65rem;color:var(--muted);">— Fixed</span>';
+    return '<tr style="' + (i%2?'background:var(--card);':'') + 'border-bottom:1px solid var(--border);">' +
+      '<td style="padding:.5rem .75rem;"><div style="font-weight:600;">' + e.name + '</div>' +
+      '<div style="font-size:.67rem;color:var(--muted);">' + e.detail + '</div>' +
+      '<div style="margin-top:.18rem;">' + shiftTag + '</div></td>' +
+      '<td style="padding:.5rem .75rem;color:var(--muted);font-size:.73rem;">' + e.block + '</td>' +
+      '<td style="padding:.5rem .75rem;text-align:right;font-family:var(--font-display);font-weight:700;color:var(--amber);">' + e.kva + ' KVA</td>' +
+      '<td style="padding:.5rem .75rem;text-align:right;"><div style="font-weight:600;">' + pct + '%</div>' +
+      '<div style="height:5px;border-radius:3px;background:var(--border);margin-top:3px;">' +
+      '<div style="height:100%;border-radius:3px;background:var(--amber);width:' + pct + '%;"></div></div></td>' +
+      '<td style="padding:.5rem .75rem;font-family:var(--font-display);font-weight:700;">\u20B9' + cost + '</td>' +
+      '<td style="padding:.5rem .75rem;">' + priority + '</td></tr>';
+  }).join('');
+
+  if (equipChart) equipChart.destroy();
+  equipChart = new Chart(document.getElementById('equipChart'), {
+    type: 'bar',
+    data: {
+      labels: visible.map(e => e.name),
+      datasets: [{ label: 'Peak KVA', data: visible.map(e => e.kva),
+        backgroundColor: visible.map(e => e.kva>=70?'#c0392b':e.kva>=30?'#f5a623':'#00c9a7'),
+        borderRadius: 5 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: 'rgba(26,122,60,.07)' },
+             title: { display: true, text: 'Peak Demand (KVA)',
+                      font: { family: 'Space Mono', size: 10 }, color: '#7aa89e' },
+             ticks: { font: { family: 'Space Mono', size: 9 } } },
+        y: { grid: { display: false }, ticks: { font: { family: 'Space Mono', size: 10 } },
+             title: { display: true, text: 'Equipment / Area',
+                      font: { family: 'Space Mono', size: 10 }, color: '#7aa89e' } }
+      }
+    }
+  });
+}
+
+// ── STEP 3: DRAG SLIDERS + LIVE CHART ─
+function buildSliders() {
+  const shiftable = EQUIPMENT.filter(e => e.shiftable);
+  const filter    = currentBlockFilter;
+  const visible   = (filter === 'ALL' || filter === 'ECE')
+    ? shiftable
+    : shiftable.filter(e => e.block === filter || e.block === 'All');
+
+  document.getElementById('stagger-sliders').innerHTML = visible.map(e => {
+    const off      = sliderOffsets[e.name] || 0;
+    const totalMin = 9 * 60 + off;
+    const timeStr  = Math.floor(totalMin/60) + ':' + String(totalMin%60).padStart(2,'0');
+    const safeId   = e.name.replace(/[^a-zA-Z0-9]/g,'_');
+    return '<div class="stag-row">' +
+      '<div class="stag-name">' + e.name + '<small>' + e.block + ' · ' + e.kva + ' KVA</small></div>' +
+      '<input class="stag-slider" type="range" min="0" max="90" step="5" value="' + off + '"' +
+        ' oninput="onSliderMove(\'' + e.name + '\',this.value)">' +
+      '<div class="stag-time" id="stime_' + safeId + '">' + timeStr + '</div>' +
+      '<div class="stag-kva">' + (off===0?'<span style="color:var(--red);">No delay</span>':'<span style="color:var(--green);">+'+off+' min</span>') + '</div>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('stagger-reco').style.display = 'block';
+}
+
+function onSliderMove(name, val) {
+  sliderOffsets[name] = +val;
+  const safeId   = name.replace(/[^a-zA-Z0-9]/g,'_');
+  const totalMin = 9 * 60 + +val;
+  const timeStr  = Math.floor(totalMin/60) + ':' + String(totalMin%60).padStart(2,'0');
+  const timeEl   = document.getElementById('stime_' + safeId);
+  if (timeEl) timeEl.textContent = timeStr;
+  // Rebuild delay labels without full slider rebuild
+  buildSliders();
+  updateStaggerChart();
+}
+
+function updateStaggerChart() {
+  const shiftable  = EQUIPMENT.filter(e => e.shiftable);
+  const fixedKVA   = EQUIPMENT.filter(e => !e.shiftable).reduce((s,e) => s + e.kva, 0);
+  const peakBefore = EQUIPMENT.reduce((s,e) => s + e.kva, 0);
+  const RATE = 500;
+
+  // Simulate 9AM–12PM in 5-min slots
+  const slotMins = 5;
+  const slots    = 36; // 180 min / 5
+  const before   = new Array(slots).fill(peakBefore);
+  const after    = new Array(slots).fill(fixedKVA);
+
+  shiftable.forEach(e => {
+    const off    = sliderOffsets[e.name] || 0;
+    const onSlot = Math.floor(off / slotMins);
+    for (let s = onSlot; s < slots; s++) after[s] += e.kva;
+  });
+
+  const peakAfter  = Math.max(...after);
+  const kvaReduced = peakBefore - peakAfter;
+  const saving     = kvaReduced * RATE;
+
+  // Floating badge update
+  document.getElementById('sb-before').textContent = peakBefore + ' KVA';
+  document.getElementById('sb-after').textContent  = peakAfter  + ' KVA';
+  document.getElementById('sb-saving').textContent = saving > 0
+    ? '\u20B9' + saving.toLocaleString('en-IN') + ' / month' : '\u20B90 / month';
+
+  const labels = Array.from({length: slots}, (_,i) => {
+    const m = 9*60 + i*slotMins;
+    return (i % 6 === 0) ? Math.floor(m/60) + ':' + String(m%60).padStart(2,'0') : '';
+  });
+
+  if (staggerChart) staggerChart.destroy();
+  staggerChart = new Chart(document.getElementById('staggerChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Before (KVA)', data: before,
+          borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.07)',
+          fill: true, tension: 0.1, borderWidth: 2, pointRadius: 0 },
+        { label: 'After Staggering (KVA)', data: after,
+          borderColor:'#00c9a7', backgroundColor:'rgba(26,122,60,.07)',
+          fill: true, tension: 0.3, borderWidth: 2, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 120 },
+      plugins: { legend: { labels: { font: { family: 'Space Mono', size: 10 } } } },
+      scales: {
+        y: { grid: { color: 'rgba(26,122,60,.07)' }, ticks: { font: { family: 'Space Mono', size: 9 } },
+             title: { display: true, text: 'Apparent Demand (KVA)',
+                      font: { family: 'Space Mono', size: 10 }, color: '#7aa89e' } },
+        x: { grid: { display: false }, ticks: { font: { family: 'Space Mono', size: 9 }, maxRotation: 0 },
+             title: { display: true, text: 'Time (9 AM \u2192 12 PM)',
+                      font: { family: 'Space Mono', size: 10 }, color: '#7aa89e' } }
+      }
+    }
+  });
+}
+
+function initDemandTab() {
+  goStep(1);
+  drawLoadProfile();
+}
+
+// ═══════════════════════════════════
+// DASHBOARD CHARTS INIT
+
+// ═══════════════════════════════════
+function initCharts(){
+  savingsChart=new Chart(document.getElementById('savingsChart'),{type:'line',data:{labels:['Oct','Nov','Dec','Jan','Feb'],datasets:[{label:'kWh Saved',data:[0,0,0,0,0],borderColor:'#00c9a7',backgroundColor:'rgba(26,122,60,.07)',fill:true,tension:.4,borderWidth:2,pointBackgroundColor:'#00c9a7',pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(26,122,60,.07)'},title:{display:true,text:'Energy Saved (kWh)',font:{family:'Space Mono',size:10},color:'#7aa89e'}},x:{grid:{display:false},title:{display:true,text:'Month',font:{family:'Space Mono',size:10},color:'#7aa89e'}}}}});
+  blockCostChart=new Chart(document.getElementById('blockCostChart'),{type:'bar',data:{labels:['EEE','CSE','IT','ECE','Admin'],datasets:[{label:'₹/month',data:[77258,79819,61880,104560,49940],backgroundColor:['#00c9a7','#00957a','#f5a623','#ff5252','#38bdf8'],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'₹'+v.toLocaleString()},grid:{color:'rgba(26,122,60,.07)'},title:{display:true,text:'Monthly Cost (₹)',font:{family:'Space Mono',size:10},color:'#7aa89e'}},x:{grid:{display:false},title:{display:true,text:'Block',font:{family:'Space Mono',size:10},color:'#7aa89e'}}}}}); 
+  occChart=new Chart(document.getElementById('occChart'),{type:'line',data:{labels:['T-1'],datasets:[{label:'Active Load (kW)',data:[0],borderColor:'#00c9a7',backgroundColor:'rgba(26,122,60,.07)',fill:true,tension:.4,borderWidth:2,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Space Mono',size:10}}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(26,122,60,.07)'},title:{display:true,text:'Active Load (kW)',font:{family:'Space Mono',size:10},color:'#7aa89e'}},x:{grid:{display:false},title:{display:true,text:'Time',font:{family:'Space Mono',size:10},color:'#7aa89e'}}}}});
+  renderPQCards(.94,149,142);
+}
+
+// ═══════════════════════════════════
+// LOG + TOAST
+// ═══════════════════════════════════
+function addLog(msg){
+  auditLog.unshift({time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),msg});
+  document.getElementById('audit-log').innerHTML=auditLog.slice(0,15).map(l=>`<div class="log-item"><div class="log-dot"></div><span class="log-time">${l.time}</span><span>${l.msg}</span></div>`).join('');
+}
+function showToast(msg,warn=false){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(warn?' warn-toast':'');
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ═══════════════════════════════════
+// PDF REPORT
+// ═══════════════════════════════════
+function downloadReport(){
+  const now=new Date().toLocaleString();
+  const l=lastAudit.lighting,a=lastAudit.appliance;
+  let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Energy Audit Report — GNITS</title>
+  <style>body{font-family:Arial,sans-serif;padding:40px;color:#1a1f1a;max-width:920px;margin:0 auto;}
+  h1{color:#00c9a7;border-bottom:3px solid #00c9a7;padding-bottom:8px;font-size:20px;}
+  h2{color:#00c9a7;font-size:14px;margin-top:22px;margin-bottom:8px;}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px;}
+  th{background:#ffffff;color:#00c9a7;padding:7px;text-align:left;}
+  td{padding:6px 7px;border-bottom:1px solid #d4e4d4;}
+  .stat{display:inline-block;background:#f7faf7;border:1px solid #d4e4d4;border-radius:8px;padding:9px 15px;margin:4px;text-align:center;}
+  .sv{font-size:17px;font-weight:bold;color:#00c9a7;}.sl{font-size:10px;color:#7aa89e;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:bold;font-size:11px;}
+  .good{background:rgba(26,122,60,.10);color:#00c9a7;}.warn{background:rgba(245,166,35,.12);color:#e67e22;}.bad{background:rgba(255,82,82,.12);color:#c0392b;}
+  footer{margin-top:36px;font-size:10px;color:#7aa89e;border-top:1px solid #1a4a42;padding-top:10px;}
+  </style></head><body>
+  <h1>⚡ Strategic Energy Audit Report</h1>
+  <p><strong>Institution:</strong> G. Narayanamma Institute of Technology and Science (For Women), Shaikpet, Hyderabad</p>
+  <p><strong>Project:</strong> Strategic Energy Management — Auditing, Monitoring, and Demand Charge Mitigation</p>
+  <p><strong>Generated:</strong> ${now}</p>
+  <h2>Summary</h2>
+  <div>
+    <div class="stat"><div class="sv">${totalSavedMonth.toFixed(0)} kWh</div><div class="sl">Monthly Savings</div></div>
+    <div class="stat"><div class="sv">₹${costSavedMonth.toFixed(0)}</div><div class="sl">Cost Saved</div></div>
+    <div class="stat"><div class="sv">${(totalSavedMonth*.82).toFixed(0)} kg</div><div class="sl">CO₂ Avoided</div></div>
+    <div class="stat"><div class="sv">5</div><div class="sl">Blocks Audited (ECE floor plan pending)</div></div>
+  </div>
+  <h2>TSSPDCL Tariff Structure — Category 2A (HT, 11 KV)</h2>
+  <table><tr><th>Charge</th><th>Rate</th><th>Basis</th><th>Notes</th></tr>
+  <tr><td>Demand Charges Normal</td><td>₹500/KVA</td><td>Per KVA of contracted MD</td><td>Billed on contracted MD or actual, whichever higher</td></tr>
+  <tr><td>Demand Charges Penal</td><td>₹1000/KVA</td><td>Per KVA exceeding contracted MD</td><td>Applies only if actual demand exceeds contracted MD</td></tr>
+  <tr><td>Energy Charges</td><td>88 paise/unit</td><td>Per kWh consumed</td><td>Largest component — ~83% of total bill</td></tr>
+  <tr><td>TOD Incentive (Off-peak)</td><td>Rebate on FR vs IR units</td><td>Off-peak slot units</td><td>Shifts loads to 10PM–6AM earns rebate</td></tr>
+  <tr><td>TOD Charges (Peak)</td><td>10 paise/unit</td><td>Peak hour units</td><td>6AM–10AM and 6PM–10PM surcharge</td></tr>
+  <tr><td>Electricity Duty</td><td>6 paise/unit</td><td>Per kWh consumed</td><td>State government levy</td></tr>
+  <tr><td>Customer Charges</td><td>₹2,000/month</td><td>Fixed</td><td>Regardless of consumption</td></tr>
+  <tr><td>IT TCS U/s 206C(1H)</td><td>0.1% of bill</td><td>On gross total</td><td>Claimable in IT return</td></tr>
+  </table>
+
+  <h2>Block-wise Monthly Costs</h2>
+  <table><tr><th>Block</th><th>Monthly Cost (₹)</th><th>Floors</th><th>Priority</th></tr>
+  <tr><td>ECE Block</td><td>₹1,04,560</td><td>4</td><td><span class="badge bad">🔴 Highest</span></td></tr>
+  <tr><td>CSE Block</td><td>₹79,819</td><td>4 floors (GF–4F)</td><td><span class="badge warn">🟠 High</span></td></tr>
+  <tr><td>EEE Block</td><td>₹77,258</td><td>4 floors (GF–3F)</td><td><span class="badge warn">🟠 High</span></td></tr>
+  <tr><td>IT/Library Block</td><td>₹61,880</td><td>4 floors (GF–4F)</td><td><span class="badge">🟡 Medium</span></td></tr>
+  <tr><td>Admin Block</td><td>₹49,940</td><td>5 floors (GF–4F)</td><td><span class="badge good">🟢 Lower</span></td></tr>
+  <tr><td><strong>TOTAL</strong></td><td><strong>₹3,73,437/month</strong></td><td>—</td><td>—</td></tr>
+  </table>`;
+  if(l){const bc=l.ILER>=.75?'good':l.ILER>.5?'warn':'bad';html+=`<h2>Lighting Audit — ${l.room}</h2><p>Assessment: <span class="badge ${bc}">${l.msg}</span></p><table><tr><th>Parameter</th><th>Value</th></tr><tr><td>Room Index</td><td>${l.RI.toFixed(2)}</td></tr><tr><td>Circuit Load</td><td>${l.cW} W</td></tr><tr><td>W/m²</td><td>${l.wm2.toFixed(2)}</td></tr><tr><td>Average Lux</td><td>${l.avg.toFixed(0)}</td></tr><tr><td>Net Lux</td><td>${l.net.toFixed(0)}</td></tr><tr><td>Target Lux</td><td>${l.target.toFixed(0)}</td></tr><tr><td>ILER</td><td>${l.ILER.toFixed(2)}</td></tr></table>`;}
+  if(a){html+=`<h2>Appliance Audit — ${a.block}</h2><table><tr><th>Metric</th><th>Value</th></tr><tr><td>Baseline Energy</td><td>${a.tBase.toFixed(0)} kWh/mo</td></tr><tr><td>Optimized Energy</td><td>${a.tOpt.toFixed(0)} kWh/mo</td></tr><tr><td>Energy Saved</td><td>${a.saved.toFixed(0)} kWh/mo</td></tr><tr><td>Monthly Cost Savings</td><td>₹${a.cSave.toFixed(0)}</td></tr><tr><td>Saving Potential</td><td>${a.pct}%</td></tr></table>`;}
+  html+=`<h2>Key Recommendations</h2>
+  <ul style="font-size:12px;line-height:2.2;">
+  <li>Replace all 40W fluorescent tubes → 18W LED across all 5 blocks (saves ₹30,000+/month campus-wide)</li>
+  <li>Replace 60W ceiling fans → 28W BLDC fans (53% per fan saving)</li>
+  <li>Install PIR occupancy sensors in all labs and corridors (20–30% lighting saving)</li>
+  <li>Install capacitor banks to maintain PF > 0.95 and avoid kVAh surcharges</li>
+  <li>Implement Maximum Demand Controller to prevent exceeding 250 kVA sanctioned demand</li>
+  <li>Enable PC power management across all 400+ lab computers</li>
+  <li>Install smart sub-meters per block for block-wise continuous monitoring</li>
+  <li>Apply for LT-IV Educational Institution tariff from TSSPDCL</li>
+  <li>Solar rooftop + BESS for peak demand shaving (15–30% demand charge reduction)</li>
+  </ul>
+  <h2>Audit Log</h2>
+  <table><tr><th>Time</th><th>Entry</th></tr>
+  ${auditLog.map(l=>`<tr><td>${l.time}</td><td>${l.msg}</td></tr>`).join('')||'<tr><td colspan="2">No entries</td></tr>'}
+  </table>
+  <footer>
+    <p>Project: Strategic Energy Management for Educational Institutions | GNITS</p>
+    <p>Guide: Mrs. Narmada Byreddy, Assistant Professor | Team: Rolakanti Devisree · Devara Sneha Reddy · D S Dakshayani · Ajmeera Jhansi Rani · Darani Sharanya</p>
+  </footer></body></html>`;
+  const w=window.open('','_blank');w.document.write(html);w.document.close();
+  setTimeout(()=>{w.focus();w.print();},500);
+  showToast('📄 Report ready — Print → Save as PDF');
+}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  initCharts();
+  buildRooms();
+  startLiveSimulation();
+  // Blueprint initialises on first visit
+  buildFloorTabs();
+  drawFloorPlan();
+  // Timetable room lookup index
+  ttBuildLookup();
+});
+
+
+// ═══════════════════════════════════════════════════════
+// TIMETABLE ENGINE — Working Hours Calculator
+// ═══════════════════════════════════════════════════════
+
+// Data store: ttData[year][roomName] = total minutes/week
+const ttData = { 1:{}, 2:{}, 3:{}, 4:{} };
+let ttActiveYear = 1;
+
+// Room name normaliser — maps timetable strings to blueprint room IDs
+function ttNormalise(name) {
+  return name.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+
+// Build a lookup: normalised room name → room objects across all blocks/floors
+const TT_ROOM_LOOKUP = {};
+function ttBuildLookup() {
+  Object.values(BLOCKS).forEach(block => {
+    block.floors.forEach(floor => {
+      floor.rooms.forEach(room => {
+        const key = ttNormalise(room.label);
+        if (!TT_ROOM_LOOKUP[key]) TT_ROOM_LOOKUP[key] = [];
+        TT_ROOM_LOOKUP[key].push(room);
+        // Also index by id
+        TT_ROOM_LOOKUP[room.id] = [room];
+        // Short aliases
+        const short = ttNormalise(room.label.split('\n')[0]);
+        if (!TT_ROOM_LOOKUP[short]) TT_ROOM_LOOKUP[short] = [];
+        TT_ROOM_LOOKUP[short].push(room);
+      });
+    });
+  });
+}
+
+// Find closest matching room
+function ttFindRoom(name) {
+  const key = ttNormalise(name);
+  if (TT_ROOM_LOOKUP[key]) return TT_ROOM_LOOKUP[key];
+  // Partial match
+  for (const k of Object.keys(TT_ROOM_LOOKUP)) {
+    if (k.includes(key) || key.includes(k)) return TT_ROOM_LOOKUP[k];
+  }
+  return null;
+}
+
+// Parse HH:MM time string → minutes since midnight
+function ttTimeMins(t) {
+  const [h,m] = t.trim().split(':').map(Number);
+  return h*60 + (m||0);
+}
+
+// Parse a CSV/text timetable
+// Expected columns: Room, Subject, Day, Start, End
+// Returns array of {room, subject, day, startMins, endMins, durationMins}
+function ttParseCSV(text) {
+  const lines = text.trim().split('\n').filter(l=>l.trim()&&!l.startsWith('#'));
+  const rows = [];
+  lines.forEach((line, li) => {
+    // Skip header row
+    if (li===0 && /room|subject|day/i.test(line)) return;
+    const cols = line.split(',').map(c=>c.trim());
+    if (cols.length < 5) return;
+    const [room, subject, day, start, end] = cols;
+    const startMins = ttTimeMins(start);
+    const endMins   = ttTimeMins(end);
+    if (isNaN(startMins)||isNaN(endMins)||endMins<=startMins) return;
+    rows.push({ room, subject, day, startMins, endMins, durationMins: endMins-startMins });
+  });
+  return rows;
+}
+
+// Aggregate: for each room, total minutes per day (average over 5 weekdays)
+function ttAggregate(rows) {
+  // {roomName: {Mon:mins, Tue:mins, ...}}
+  const byRoom = {};
+  rows.forEach(r => {
+    if (!byRoom[r.room]) byRoom[r.room] = {};
+    byRoom[r.room][r.day] = (byRoom[r.room][r.day]||0) + r.durationMins;
+  });
+  // Convert to average daily hours
+  const result = {};
+  Object.entries(byRoom).forEach(([room, days]) => {
+    const totalMins = Object.values(days).reduce((a,b)=>a+b,0);
+    const numDays = Object.keys(days).length;
+    // Average across the days that have classes, then scale to 5-day week
+    result[room] = { totalMinsPerWeek: totalMins, daysWithClasses: numDays,
+                     avgHoursPerDay: +(totalMins / (numDays||1) / 60).toFixed(2),
+                     totalHoursPerWeek: +(totalMins/60).toFixed(1) };
+  });
+  return result;
+}
+
+// Apply parsed data for current year
+function ttApplyData(rows) {
+  const agg = ttAggregate(rows);
+  ttData[ttActiveYear] = agg;
+
+  // Update room objects with actual hours
+  Object.entries(agg).forEach(([roomName, info]) => {
+    const matches = ttFindRoom(roomName);
+    if (matches) {
+      matches.forEach(room => {
+        room.dailyHours = info.avgHoursPerDay;
+        room.ttLinked = true;
+      });
+    }
+  });
+
+  ttUpdateStatusCards();
+  ttRenderHoursTable(agg);
+  showToast(`✅ ${Object.keys(agg).length} rooms loaded for ${ttYearLabel(ttActiveYear)} — heat map updated`);
+  if (heatOn) drawFloorPlan();
+}
+
+function ttYearLabel(y) { return ['I','II','III','IV'][y-1]+' Year'; }
+
+function ttSelectYear(y) {
+  ttActiveYear = y;
+  document.querySelectorAll('.tt-ytab').forEach((btn,i)=>{
+    btn.className = 'btn btn-outline tt-ytab' + (i+1===y?' btn-green':'');
+  });
+  document.getElementById('tt-year-label').textContent = ttYearLabel(y);
+  if (Object.keys(ttData[y]).length) {
+    ttRenderHoursTable(ttData[y]);
+    document.getElementById('tt-hours-wrap').style.display='block';
+  } else {
+    document.getElementById('tt-hours-wrap').style.display='none';
+  }
+}
+
+function ttUpdateStatusCards() {
+  for (let y=1;y<=4;y++) {
+    const agg = ttData[y];
+    const keys = Object.keys(agg);
+    const card = document.getElementById('tt-stat-'+y);
+    const hrsEl = document.getElementById('tt-hrs-'+y);
+    const rmsEl = document.getElementById('tt-rms-'+y);
+    if (keys.length) {
+      const avgH = +(keys.reduce((s,k)=>s+agg[k].avgHoursPerDay,0)/keys.length).toFixed(1);
+      hrsEl.textContent = avgH+' h/day';
+      rmsEl.textContent = keys.length+' rooms';
+      card.classList.add('has-data');
+    } else {
+      hrsEl.textContent = '– h/day';
+      rmsEl.textContent = 'No data';
+      card.classList.remove('has-data');
+    }
+  }
+}
+
+function ttRenderHoursTable(agg) {
+  const wrap = document.getElementById('tt-hours-wrap');
+  const tbl  = document.getElementById('tt-hours-table');
+  wrap.style.display = 'block';
+  const TARIFF = 8.5, DAYS = 26;
+  let rows = Object.entries(agg).sort((a,b)=>b[1].avgHoursPerDay-a[1].avgHoursPerDay);
+  // Find matched room kW
+  let html = `<table class="tt-table"><thead><tr>
+    <th>Room / Space</th><th>Avg Hours/Day</th><th>Hours/Week</th><th>Days with Classes</th>
+    <th>Load (kW)</th><th>kWh/month</th><th>Est. Cost/month</th><th>Match</th>
+  </tr></thead><tbody>`;
+  rows.forEach(([room, info]) => {
+    const matches = ttFindRoom(room);
+    const kw = matches ? matches[0].kw : '?';
+    const kwh = kw!=='?' ? +(kw * info.avgHoursPerDay * DAYS).toFixed(0) : '—';
+    const cost = kwh!=='—' ? '₹'+(kwh*TARIFF).toFixed(0) : '—';
+    const matched = matches ? '<span style="color:var(--green)">✓ Matched</span>' : '<span style="color:var(--amber)">? Unmatched</span>';
+    html += `<tr>
+      <td><strong>${room}</strong></td>
+      <td class="hrs">${info.avgHoursPerDay}</td>
+      <td>${info.totalHoursPerWeek}</td>
+      <td>${info.daysWithClasses}</td>
+      <td>${kw}</td>
+      <td class="kwh">${kwh}</td>
+      <td class="cost">${cost}</td>
+      <td>${matched}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  tbl.innerHTML = html;
+}
+
+function ttHandleFile(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const rows = ttParseCSV(e.target.result);
+    if (!rows.length) { showToast('⚠️ No valid rows found. Check format.'); return; }
+    ttApplyData(rows);
+  };
+  reader.readAsText(file);
+  evt.target.value=''; // reset so same file can be re-uploaded
+}
+
+function ttParseManual() {
+  const text = document.getElementById('tt-manual').value;
+  if (!text.trim()) { showToast('⚠️ No text entered.'); return; }
+  const rows = ttParseCSV(text);
+  if (!rows.length) { showToast('⚠️ No valid rows found. Format: Room, Subject, Day, HH:MM, HH:MM'); return; }
+  ttApplyData(rows);
+}
+
+function ttApplyToHeatmap() {
+  if (!Object.values(ttData).some(d=>Object.keys(d).length)) {
+    showToast('⚠️ Upload a timetable first.'); return;
+  }
+  heatOn = true;
+  drawFloorPlan();
+  showHotspotList();
+  showRecs();
+  showToast('🔥 Heat map recalculated using actual timetable hours');
+}
+
+function ttDownloadSummary() {
+  let csv = 'Year,Room,Avg Hours/Day,Hours/Week,Days with Classes\n';
+  for (let y=1;y<=4;y++) {
+    Object.entries(ttData[y]).forEach(([room,info])=>{
+      csv += `${ttYearLabel(y)},${room},${info.avgHoursPerDay},${info.totalHoursPerWeek},${info.daysWithClasses}\n`;
+    });
+  }
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='gnits_timetable_hours.csv'; a.click();
+}
+
+function ttDownloadSample() {
+  const sample = `Room,Subject,Day,Start,End
+EEE Machine Lab,Power Systems,Mon,09:00,11:00
+EEE Machine Lab,Electrical Machines,Tue,10:00,12:00
+EEE Micro Processor Lab,Microcontrollers,Wed,09:00,11:00
+CSE Computer Lab-I,DBMS Practical,Mon,11:00,13:00
+CSE Computer Lab-I,OS Lab,Thu,09:00,11:00
+CSE Computer Lab-III,Python Lab,Tue,14:00,16:00
+IT MAC Lab,Web Technologies,Mon,09:00,11:00
+IT Seminar Hall,Guest Lecture,Fri,10:00,12:00
+Admin Seminar Hall GF,FDP,Wed,09:00,17:00
+`;
+  const blob = new Blob([sample],{type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='gnits_timetable_sample.csv'; a.click();
+}
+
+function ttClear() {
+  for(let y=1;y<=4;y++) { ttData[y]={}; }
+  // Reset room dailyHours to default
+  Object.values(BLOCKS).forEach(block => {
+    block.floors.forEach(floor => {
+      floor.rooms.forEach(room => { room.dailyHours=null; room.ttLinked=false; });
+    });
+  });
+  ttUpdateStatusCards();
+  document.getElementById('tt-hours-wrap').style.display='none';
+  if(heatOn) drawFloorPlan();
+  showToast('✕ Timetable data cleared — default 8h/day restored');
+}
+
+
+</script>
+
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║   ECOAUDIT AI ASSISTANT — Floating Chat Widget      ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<style>
+#ea-widget{position:fixed;bottom:24px;right:24px;z-index:9999;font-family:'DM Mono','Fira Mono',monospace;}
+#ea-fab{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#1a7a3c,#22a052);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(26,122,60,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;position:relative;}
+#ea-fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(26,122,60,.55);}
+#ea-fab svg{width:26px;height:26px;transition:transform .25s ease;}
+#ea-fab.open svg{transform:rotate(45deg);}
+#ea-notif{position:absolute;top:1px;right:1px;width:18px;height:18px;border-radius:50%;background:#f5c33a;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:7px;color:#78350f;font-weight:800;letter-spacing:-.5px;animation:eaBounce 2.5s ease-in-out infinite;}
+@keyframes eaBounce{0%,100%{transform:scale(1);}50%{transform:scale(1.25);}}
+#ea-tooltip{position:absolute;bottom:68px;right:0;background:#1e293b;color:#fff;font-size:11px;border-radius:8px;padding:6px 13px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s;letter-spacing:.04em;}
+#ea-tooltip::after{content:'';position:absolute;bottom:-5px;right:19px;border:5px solid transparent;border-top-color:#1e293b;border-bottom:none;}
+#ea-fab:hover ~ #ea-tooltip{opacity:1;}
+#ea-panel{position:fixed;bottom:96px;right:24px;width:min(388px,calc(100vw - 32px));height:min(580px,calc(100vh - 120px));background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.18);border:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden;transform:scale(0.88) translateY(20px);transform-origin:bottom right;opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.34,1.4,.64,1),opacity .22s ease;z-index:9998;}
+#ea-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+#ea-head{background:linear-gradient(135deg,#1a7a3c,#22a052);padding:12px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.ea-av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ea-hinfo{flex:1;}
+.ea-hname{color:#fff;font-weight:700;font-size:13px;letter-spacing:.03em;}
+.ea-hsub{color:rgba(255,255,255,.62);font-size:9px;letter-spacing:.1em;}
+.ea-online{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border-radius:20px;padding:4px 10px;}
+.ea-odot{width:7px;height:7px;border-radius:50%;background:#0ecfaa;box-shadow:0 0 8px #0ecfaa;animation:eaPulse 2s infinite;}
+@keyframes eaPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ea-online span{color:#fff;font-size:9px;letter-spacing:.1em;}
+.ea-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
+.ea-close:hover{background:rgba(255,255,255,.28);}
+#ea-msgs{flex:1;overflow-y:auto;padding:14px 13px 6px;scroll-behavior:smooth;}
+#ea-msgs::-webkit-scrollbar{width:3px;}
+#ea-msgs::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:3px;}
+.ea-msg{display:flex;gap:8px;margin-bottom:13px;animation:eaMsgIn .28s cubic-bezier(.34,1.4,.64,1) both;}
+@keyframes eaMsgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.ea-msg.user{flex-direction:row-reverse;}
+.ea-mav{width:27px;height:27px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.ea-msg.bot .ea-mav{background:linear-gradient(135deg,#1a7a3c,#0ecfaa);}
+.ea-msg.user .ea-mav{background:linear-gradient(135deg,#2563eb,#7c3aed);}
+.ea-bubble{max-width:83%;padding:10px 13px;font-size:12.5px;line-height:1.65;border-radius:14px;}
+.ea-msg.bot .ea-bubble{background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px 14px 14px 14px;color:#1e293b;}
+.ea-msg.user .ea-bubble{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-radius:14px 4px 14px 14px;}
+.ea-math{display:inline;font-style:italic;color:#1a7a3c;background:#f0fdf4;padding:1px 5px;border-radius:3px;font-family:Georgia,serif;font-size:.95em;}
+.ea-math-block{display:block;background:#f1f5f9;border-left:3px solid #1a7a3c;border-radius:6px;padding:8px 12px;margin:6px 0;font-style:italic;font-family:Georgia,serif;font-size:.92em;color:#1e293b;}
+.ea-bubble code{background:#0f172a;color:#e2e8f0;padding:2px 6px;border-radius:4px;font-size:.82em;font-family:'DM Mono',monospace;}
+.ea-bubble pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:10px 12px;font-size:.78em;overflow-x:auto;margin:6px 0;white-space:pre-wrap;font-family:'DM Mono',monospace;line-height:1.6;}
+.ea-time{font-size:9px;opacity:.45;margin-top:5px;text-align:right;}
+.ea-msg.user .ea-time{color:rgba(255,255,255,.65);}
+.ea-typing{display:flex;gap:4px;padding:3px 2px;align-items:center;}
+.ea-typing span{width:6px;height:6px;border-radius:50%;background:#1a7a3c;opacity:.5;animation:eaDot 1.2s ease-in-out infinite;}
+.ea-typing span:nth-child(2){animation-delay:.18s;}
+.ea-typing span:nth-child(3){animation-delay:.36s;}
+@keyframes eaDot{0%,100%{transform:translateY(0);opacity:.4;}50%{transform:translateY(-5px);opacity:1;}}
+#ea-chips{padding:4px 12px 8px;display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0;}
+.ea-chip{background:#f0fdf4;border:1px solid rgba(26,122,60,.22);color:#22a052;border-radius:20px;padding:4px 11px;font-size:10px;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:.03em;white-space:nowrap;}
+.ea-chip:hover{background:#1a7a3c;color:#fff;transform:translateY(-1px);}
+#ea-inputbar{padding:8px 12px 12px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0;}
+#ea-inputrow{display:flex;gap:8px;align-items:flex-end;}
+#ea-input{flex:1;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:12px;font-family:inherit;color:#1e293b;background:#f8fafc;resize:none;outline:none;transition:border-color .2s,box-shadow .2s;max-height:90px;overflow-y:auto;line-height:1.5;}
+#ea-input:focus{border-color:#1a7a3c;box-shadow:0 0 0 3px rgba(26,122,60,.1);background:#fff;}
+#ea-send{width:38px;height:38px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1a7a3c,#22a052);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(26,122,60,.35);transition:all .18s;}
+#ea-send:hover{transform:scale(1.08);}
+#ea-send:disabled{background:#e2e8f0;box-shadow:none;cursor:not-allowed;transform:none;}
+#ea-send svg{width:16px;height:16px;}
+#ea-hint{font-size:9px;color:#94a3b8;text-align:center;margin-top:6px;letter-spacing:.06em;}
+</style>
+
+<div id="ea-widget">
+  <button id="ea-fab" onclick="eaToggle()" aria-label="EcoAudit AI Assistant">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="8" width="18" height="13" rx="3"/>
+      <path d="M8 8V6a4 4 0 018 0v2"/>
+      <circle cx="9" cy="14" r="1.2" fill="#fff" stroke="none"/>
+      <circle cx="15" cy="14" r="1.2" fill="#fff" stroke="none"/>
+      <path d="M9.5 17.5c.9.5 4.1.5 5 0" stroke-width="1.6"/>
+    </svg>
+    <div id="ea-notif">AI</div>
+  </button>
+  <div id="ea-tooltip">EcoAudit AI Assistant ⚡</div>
+
+  <div id="ea-panel">
+    <div id="ea-head">
+      <div class="ea-av">⚡</div>
+      <div class="ea-hinfo">
+        <div class="ea-hname">EcoAudit Assistant</div>
+        <div class="ea-hsub">AI ENERGY CONSULTANT · GNITS</div>
+      </div>
+      <div class="ea-online"><div class="ea-odot"></div><span>ONLINE</span></div>
+      <button class="ea-close" onclick="eaToggle()">✕</button>
+    </div>
+
+    <div id="ea-msgs"></div>
+
+    <div id="ea-chips">
+      <button class="ea-chip" onclick="eaSend('Explain Power Factor and how it affects our TSSPDCL bill at GNITS.')">⚡ Power Factor</button>
+      <button class="ea-chip" onclick="eaSend('Walk me through a classroom lighting audit step by step.')">💡 Lighting Audit</button>
+      <button class="ea-chip" onclick="eaSend('Calculate daily solar generation for 181 kWp at GNITS Hyderabad.')">☀️ Solar Yield</button>
+      <button class="ea-chip" onclick="eaSend('My ESP32 is not sending data to the dashboard. How do I debug it?')">🔌 ESP32 Debug</button>
+      <button class="ea-chip" onclick="eaSend('What is the ILER formula and what is the BEE standard limit?')">📊 ILER Formula</button>
+      <button class="ea-chip" onclick="eaSend('How do TSSPDCL demand charges work and how can we reduce penalty exposure?')">💰 Demand Charge</button>
+    </div>
+
+    <div id="ea-inputbar">
+      <div id="ea-inputrow">
+        <textarea id="ea-input" rows="1"
+          placeholder="Ask about energy, ESP32, solar, ILER…"
+          onkeydown="eaKey(event)"
+          oninput="eaInputChange(this)"></textarea>
+        <button id="ea-send" onclick="eaSendInput()" disabled aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+          </svg>
+        </button>
+      </div>
+      <div id="ea-hint">Enter to send · Shift+Enter for newline</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PROXY CONFIG — update this URL after deploying your Cloudflare Worker ──
+const EA_PROXY_URL = 'https://gnits-energyaudit-proxy.YOUR-NAME.workers.dev/api/chat';
+// ─────────────────────────────────────────────────────────────────────────────
+
+const EA_SYS=`You are the "EcoAudit Assistant," a specialized AI energy consultant for the GNITS EnergyAudit dashboard. Campus: 5 blocks (EEE,CSE,IT,Admin,ECE). Sanctioned load 250KVA, contracted MD 400KVA. TSSPDCL tariff Rs.8.50/kWh, demand Rs.500/KVA, penal Rs.1000/KVA. Monthly bill Rs.3,73,457. Solar 181kWp (Admin60,IT50,ECE40,CSE30,EEE1). PSH 5.5h, efficiency 80%, daily gen 796kWh. Battery 90kWh/48V. CO2 0.82kg/kWh. BEE ILER limit 3.0W/m2/100lux. CF: LED=1.00,Fluoro=1.08,Mercury=1.14,HPS=1.22. Student: Jhansi Rani Ajmeera. Guide: Mrs.Narmada Byreddy. Explain EEE concepts clearly. Provide formulas in LaTeX: $inline$ and $$block$$. Use bullet points for steps. Add ⚠️ for safety warnings near live wires. Be concise, friendly, like a helpful senior engineering peer. Use ✅⚠️💡🔌☀️ icons where fitting. Under 250 words unless detailed walkthrough needed.`;
+let eaOpen=false,eaLoading=false,eaHist=[],eaChipsGone=false;
+
+function eaMath(s){return s.replace(/\\times/g,'×').replace(/\\cos/g,'cos').replace(/\\phi/g,'φ').replace(/\\eta/g,'η').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g,'($1)/($2)').replace(/\\text\{([^}]+)\}/g,'$1').replace(/\{|\}/g,'').replace(/\\\\/g,' ').replace(/\\sum/g,'Σ').replace(/\\Delta/g,'Δ').replace(/\\pi/g,'π').replace(/\^2/g,'²').replace(/\^3/g,'³').replace(/\\sqrt\{([^}]+)\}/g,'√($1)');}
+function eaEsc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function eaRender(t){
+  t=t.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre>${l?`<span style="font-size:9px;color:#64748b;display:block;margin-bottom:4px">${l.toUpperCase()}</span>`:''}<span>${eaEsc(c.trim())}</span></pre>`);
+  t=t.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>`<span class="ea-math-block">${eaMath(m.trim())}</span>`);
+  t=t.replace(/\$([^$\n]+?)\$/g,(_,m)=>`<span class="ea-math">${eaMath(m.trim())}</span>`);
+  t=t.replace(/`([^`]+)`/g,'<code>$1</code>');
+  t=t.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/^([ \t]*)([-•*]|\d+\.)\s+(.+)/gm,(_,ind,b,c)=>`<div style="display:flex;gap:7px;margin-bottom:3px;padding-left:${ind.length*5}px"><span style="color:#1a7a3c;flex-shrink:0">${b.match(/\d+\./)?b:'•'}</span><span>${c}</span></div>`);
+  t=t.replace(/^## (.+)$/gm,'<div style="font-weight:700;color:#1e293b;margin:8px 0 3px">$1</div>');
+  t=t.replace(/^# (.+)$/gm,'<div style="font-weight:700;color:#1a7a3c;margin:10px 0 4px">$1</div>');
+  t=t.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+  return t;
+}
+function eaNow(){return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
+function eaAddMsg(role,content,typing=false){
+  const c=document.getElementById('ea-msgs');
+  const d=document.createElement('div');
+  d.className=`ea-msg ${role}`;
+  if(typing)d.id='ea-typing-msg';
+  d.innerHTML=`<div class="ea-mav">${role==='bot'?'⚡':'👤'}</div><div class="ea-bubble">${typing?'<div class="ea-typing"><span></span><span></span><span></span></div>':eaRender(content)}${!typing?`<div class="ea-time">${eaNow()}</div>`:''}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+}
+function eaToggle(){
+  eaOpen=!eaOpen;
+  document.getElementById('ea-panel').classList.toggle('open',eaOpen);
+  document.getElementById('ea-fab').classList.toggle('open',eaOpen);
+  if(eaOpen){
+    document.getElementById('ea-notif').style.display='none';
+    if(!document.getElementById('ea-msgs').children.length)eaInit();
+    setTimeout(()=>document.getElementById('ea-input').focus(),300);
+  }
+}
+function eaInit(){
+  eaAddMsg('bot','Hello! I\'m your **EcoAudit Assistant** ⚡\n\nI can help with:\n- Power Factor, kWh, ILER, BEE standards\n- Solar yield for our **181 kWp** installation ☀️\n- ESP32 + PZEM-017 troubleshooting 🔌\n- TSSPDCL demand charge analysis 💰\n- Classroom & lab audit walkthroughs 💡\n\nWhat would you like to explore?');
+}
+async function eaSend(text){
+  text=text.trim();if(!text||eaLoading)return;
+  if(!eaChipsGone){document.getElementById('ea-chips').style.display='none';eaChipsGone=true;}
+  document.getElementById('ea-input').value='';
+  document.getElementById('ea-input').style.height='auto';
+  document.getElementById('ea-send').disabled=true;
+  eaAddMsg('user',text);
+  eaHist.push({role:'user',content:text});
+  eaLoading=true;
+  const te=eaAddMsg('bot','',true);
+  try{
+    const r=await fetch(EA_PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:EA_SYS,messages:eaHist})});
+    te.remove();
+    if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Error ${r.status}`);}
+    const data=await r.json();
+    const reply=data.content?.map(b=>b.text||'').join('')||'Sorry, no response generated.';
+    eaHist.push({role:'assistant',content:reply});
+    eaAddMsg('bot',reply);
+  }catch(err){
+    te.remove();
+    eaAddMsg('bot',`⚠️ **Error:** ${err.message}\n\nCheck your connection and try again.`);
+  }finally{eaLoading=false;}
+}
+function eaSendInput(){const v=document.getElementById('ea-input').value;if(v.trim())eaSend(v);}
+function eaInputChange(el){el.style.height='auto';el.style.height=Math.min(90,el.scrollHeight)+'px';document.getElementById('ea-send').disabled=!el.value.trim();}
+function eaKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();eaSendInput();}}
+</script>
+
+</body>
+</html>
